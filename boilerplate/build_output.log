@@ -1,0 +1,307 @@
+
+> nextjs-elite-boilerplate@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 11 errors:
+./src/app/(storefront)
+You cannot have two parallel pages that resolve to the same path. Please check /(public) and /(storefront).
+
+./src/shared/components/knowledge/KnowledgeHero.tsx:4:1
+Module not found: Can't resolve '@/hero.css'
+[0m [90m 2 |[39m [36mimport[39m type { [33mKnowledgeHeroData[39m } [36mfrom[39m [32m"@/shared/lib/schemas/knowledge-sections"[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m greenhouseImg [36mfrom[39m [32m"@/shared/assets/images/greenhouse-interior.webp"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m [32m"@/hero.css"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m
+ [90m 6 |[39m type [33mProps[39m [33m=[39m { data[33m?[39m[33m:[39m [33mKnowledgeHeroData[39m }[33m;[39m
+ [90m 7 |[39m[0m
+
+Import map: aliased to relative './hero.css' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/shared/components/knowledge/KnowledgeHero.tsx
+    ./src/app/(storefront)/knowledge/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/shared/components/overview/OverviewHero.tsx:3:1
+Module not found: Can't resolve '@/hero.css'
+[0m [90m 1 |[39m [36mimport[39m [33mImage[39m [36mfrom[39m [32m"next/image"[39m[33m;[39m
+ [90m 2 |[39m [36mimport[39m type { [33mOverviewHeroData[39m } [36mfrom[39m [32m'@/shared/lib/schemas/overview-sections'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 3 |[39m [36mimport[39m [32m"@/hero.css"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 4 |[39m
+ [90m 5 |[39m type [33mProps[39m [33m=[39m { data[33m?[39m[33m:[39m [33mOverviewHeroData[39m }[33m;[39m
+ [90m 6 |[39m[0m
+
+Import map: aliased to relative './hero.css' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/shared/components/overview/OverviewHero.tsx
+    ./src/app/(storefront)/overview/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/shared/components/portfolio/PortfolioHero.tsx:2:1
+Module not found: Can't resolve '@/hero.css'
+[0m [90m 1 |[39m [36mimport[39m [33mImage[39m [36mfrom[39m [32m"next/image"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m [32m"@/hero.css"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m
+ [90m 4 |[39m type [33mPortfolioStat[39m [33m=[39m { value[33m:[39m string[33m;[39m label[33m:[39m string[33m;[39m icon[33m:[39m string }[33m;[39m
+ [90m 5 |[39m[0m
+
+Import map: aliased to relative './hero.css' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./src/shared/components/portfolio/PortfolioHero.tsx
+    ./src/app/(storefront)/portfolio/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/shared/components/layout/MobileMenuGlass.tsx:13:1
+Module not found: Can't resolve '@/mobile-menu-glass.css'
+[0m [90m 11 |[39m [36mimport[39m { [33mROLE_IDS[39m } [36mfrom[39m [32m"@/shared/lib/constants/roles"[39m[33m;[39m
+ [90m 12 |[39m
+[31m[1m>[22m[39m[90m 13 |[39m [36mimport[39m [32m"@/mobile-menu-glass.css"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 14 |[39m
+ [90m 15 |[39m [36minterface[39m [33mMobileMenuGlassProps[39m {
+ [90m 16 |[39m     isOpen[33m:[39m boolean[33m;[39m[0m
+
+Import map: aliased to relative './mobile-menu-glass.css' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/shared/components/layout/MobileMenuGlass.tsx [Client Component Browser]
+    ./src/shared/components/layout/Navbar.tsx [Client Component Browser]
+    ./src/shared/components/layout/Navbar.tsx [Server Component]
+    ./src/app/(storefront)/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/shared/components/layout/MobileMenuGlass.tsx [Client Component SSR]
+    ./src/shared/components/layout/Navbar.tsx [Client Component SSR]
+    ./src/shared/components/layout/Navbar.tsx [Server Component]
+    ./src/app/(storefront)/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/shared/components/layout/MobileSearchOverlay.tsx:10:1
+Module not found: Can't resolve '@/mobile-search-overlay.css'
+[0m [90m  8 |[39m [36mimport[39m { useSearchSuggestions } [36mfrom[39m [32m"@/shared/hooks/useSearchSuggestions"[39m[33m;[39m
+ [90m  9 |[39m
+[31m[1m>[22m[39m[90m 10 |[39m [36mimport[39m [32m"@/mobile-search-overlay.css"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 11 |[39m
+ [90m 12 |[39m [36minterface[39m [33mMobileSearchOverlayProps[39m {
+ [90m 13 |[39m     isOpen[33m:[39m boolean[33m;[39m[0m
+
+Import map: aliased to relative './mobile-search-overlay.css' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/shared/components/layout/MobileSearchOverlay.tsx [Client Component Browser]
+    ./src/shared/components/layout/Navbar.tsx [Client Component Browser]
+    ./src/shared/components/layout/Navbar.tsx [Server Component]
+    ./src/app/(storefront)/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/shared/components/layout/MobileSearchOverlay.tsx [Client Component SSR]
+    ./src/shared/components/layout/Navbar.tsx [Client Component SSR]
+    ./src/shared/components/layout/Navbar.tsx [Server Component]
+    ./src/app/(storefront)/layout.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/app/(storefront)/product/page.tsx:5:1
+Module not found: Can't resolve '@/views/ProductListingPage'
+[0m [90m 3 |[39m [36mimport[39m type { [33mMetadata[39m } [36mfrom[39m [32m"next"[39m[33m;[39m
+ [90m 4 |[39m [36mimport[39m { [33mSuspense[39m } [36mfrom[39m [32m"react"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m [33mProductListingPage[39m [36mfrom[39m [32m"@/views/ProductListingPage"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 6 |[39m [36mimport[39m { [33mBreadcrumbJsonLd[39m } [36mfrom[39m [32m"@/shared/components/seo/BreadcrumbJsonLd"[39m[33m;[39m
+ [90m 7 |[39m [36mimport[39m { getCachedProducts } [36mfrom[39m [32m"@/shared/lib/data/products"[39m[33m;[39m
+ [90m 8 |[39m [36mimport[39m { getCachedCategories } [36mfrom[39m [32m"@/shared/lib/data/categories"[39m[33m;[39m[0m
+
+Import map: aliased to relative './views/ProductListingPage' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./node_modules/@hookform/resolvers/dist/resolvers.mjs:1:1
+Module not found: Can't resolve 'react-hook-form'
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m{[36mget[39m [36mas[39m t[33m,[39m[36mset[39m [36mas[39m e}[36mfrom[39m[32m"react-hook-form"[39m[33m;[39m[36mconst[39m s[33m=[39m(e[33m,[39ms[33m,[39mo)[33m=>[39m{[36mif[39m(e[33m&&[39m[32m"reportValidity"[39m[36min[39m e){[36mconst[39m r[33m=[39mt(o[33m,[39ms)[33m;[39me[33m.[39msetCustomValidity(r[33m&&[39mr[33m.[39mmessage[33m||[39m[32m""[39m)[33m,[39me[33m.[39mreportValidity()}}[33m,[39mo[33m=[39m(t[33m,[39me)[33m=>[39m{[36mfor[39m([36mconst[39m o [36min[39m e[33m.[39mfields){[36mconst[39m r[33m=[39me[33m.[39mfields[o][33m;[39mr[33m&&[39mr[33m.[39mref[33m&&[39m[32m"reportValidity"[39m[36min[39m r[33m.[39mref[33m?[39ms(r[33m.[39mref[33m,[39mo[33m,[39mt)[33m:[39mr[33m.[39mrefs[33m&&[39mr[33m.[39mrefs[33m.[39mforEach(e[33m=>[39ms(e[33m,[39mo[33m,[39mt))}}[33m,[39mr[33m=[39m(s[33m,[39mr)[33m=>[39m{r[33m.[39mshouldUseNativeValidation[33m&&[39mo(s[33m,[39mr)[33m;[39m[36mconst[39m f[33m=[39m{}[33m;[39m[36mfor[39m([36mconst[39m o [36min[39m s){[36mconst[39m n[33m=[39mt(r[33m.[39mfields[33m,[39mo)[33m,[39ma[33m=[39m[33mObject[39m[33m.[39massign(s[o][33m||[39m{}[33m,[39m{ref[33m:[39mn[33m&&[39mn[33m.[39mref})[33m;[39m[36mif[39m(i(r[33m.[39mnames[33m||[39m[33mObject[39m[33m.[39mkeys(s)[33m,[39mo)){[36mconst[39m s[33m=[39m[33mObject[39m[33m.[39massign({}[33m,[39mt(f[33m,[39mo))[33m;[39me(s[33m,[39m[32m"root"[39m[33m,[39ma)[33m,[39me(f[33m,[39mo[33m,[39ms)}[36melse[39m e(f[33m,[39mo[33m,[39ma)}[36mreturn[39m f}[33m,[39mi[33m=[39m(t[33m,[39me)[33m=>[39mt[33m.[39msome(t[33m=>[39mt[33m.[39mstartsWith(e[33m+[39m[32m"."[39m))[33m;[39m[36mexport[39m{r [36mas[39m toNestErrors[33m,[39mo [36mas[39m validateFieldsNatively}[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 2 |[39m [90m//# sourceMappingURL=resolvers.mjs.map[39m
+ [90m 3 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./node_modules/@hookform/resolvers/dist/resolvers.mjs [Client Component Browser]
+    ./node_modules/@hookform/resolvers/zod/dist/zod.mjs [Client Component Browser]
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component Browser]
+    ./src/shared/components/account/AddressList.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./node_modules/@hookform/resolvers/dist/resolvers.mjs [Client Component SSR]
+    ./node_modules/@hookform/resolvers/zod/dist/zod.mjs [Client Component SSR]
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component SSR]
+    ./src/shared/components/account/AddressList.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./node_modules/@hookform/resolvers/zod/dist/zod.mjs:1:80
+Module not found: Can't resolve 'react-hook-form'
+[0m[31m[1m>[22m[39m[90m 1 |[39m [36mimport[39m{validateFieldsNatively [36mas[39m r[33m,[39mtoNestErrors [36mas[39m e}[36mfrom[39m[32m"@hookform/resolvers"[39m[33m;[39m[36mimport[39m{appendErrors [36mas[39m o}[36mfrom[39m[32m"react-hook-form"[39m[33m;[39m[36mvar[39m n[33m=[39m[36mfunction[39m(r[33m,[39me){[36mfor[39m([36mvar[39m n[33m=[39m{}[33m;[39mr[33m.[39mlength[33m;[39m){[36mvar[39m t[33m=[39mr[[35m0[39m][33m,[39ms[33m=[39mt[33m.[39mcode[33m,[39mi[33m=[39mt[33m.[39mmessage[33m,[39ma[33m=[39mt[33m.[39mpath[33m.[39mjoin([32m"."[39m)[33m;[39m[36mif[39m([33m![39mn[a])[36mif[39m([32m"unionErrors"[39m[36min[39m t){[36mvar[39m u[33m=[39mt[33m.[39munionErrors[[35m0[39m][33m.[39merrors[[35m0[39m][33m;[39mn[a][33m=[39m{message[33m:[39mu[33m.[39mmessage[33m,[39mtype[33m:[39mu[33m.[39mcode}}[36melse[39m n[a][33m=[39m{message[33m:[39mi[33m,[39mtype[33m:[39ms}[33m;[39m[36mif[39m([32m"unionErrors"[39m[36min[39m t[33m&&[39mt[33m.[39munionErrors[33m.[39mforEach([36mfunction[39m(e){[36mreturn[39m e[33m.[39merrors[33m.[39mforEach([36mfunction[39m(e){[36mreturn[39m r[33m.[39mpush(e)})})[33m,[39me){[36mvar[39m c[33m=[39mn[a][33m.[39mtypes[33m,[39mf[33m=[39mc[33m&&[39mc[t[33m.[39mcode][33m;[39mn[a][33m=[39mo(a[33m,[39me[33m,[39mn[33m,[39ms[33m,[39mf[33m?[39m[][33m.[39mconcat(f[33m,[39mt[33m.[39mmessage)[33m:[39mt[33m.[39mmessage)}r[33m.[39mshift()}[36mreturn[39m n}[33m,[39mt[33m=[39m[36mfunction[39m(o[33m,[39mt[33m,[39ms){[36mreturn[39m [36mvoid[39m [35m0[39m[33m===[39ms[33m&&[39m(s[33m=[39m{})[33m,[39m[36mfunction[39m(i[33m,[39ma[33m,[39mu){[36mtry[39m{[36mreturn[39m [33mPromise[39m[33m.[39mresolve([36mfunction[39m(e[33m,[39mn){[36mtry[39m{[36mvar[39m a[33m=[39m[33mPromise[39m[33m.[39mresolve(o[[32m"sync"[39m[33m===[39ms[33m.[39mmode[33m?[39m[32m"parse"[39m[33m:[39m[32m"parseAsync"[39m](i[33m,[39mt))[33m.[39mthen([36mfunction[39m(e){[36mreturn[39m u[33m.[39mshouldUseNativeValidation[33m&&[39mr({}[33m,[39mu)[33m,[39m{errors[33m:[39m{}[33m,[39mvalues[33m:[39ms[33m.[39mraw[33m?[39mi[33m:[39me}})}[36mcatch[39m(r){[36mreturn[39m n(r)}[36mreturn[39m a[33m&&[39ma[33m.[39mthen[33m?[39ma[33m.[39mthen([36mvoid[39m [35m0[39m[33m,[39mn)[33m:[39ma}([35m0[39m[33m,[39m[36mfunction[39m(r){[36mif[39m([36mfunction[39m(r){[36mreturn[39m [33mArray[39m[33m.[39misArray([36mnull[39m[33m==[39mr[33m?[39m[36mvoid[39m [35m0[39m[33m:[39mr[33m.[39merrors)}(r))[36mreturn[39m{values[33m:[39m{}[33m,[39merrors[33m:[39me(n(r[33m.[39merrors[33m,[39m[33m![39mu[33m.[39mshouldUseNativeValidation[33m&&[39m[32m"all"[39m[33m===[39mu[33m.[39mcriteriaMode)[33m,[39mu)}[33m;[39m[36mthrow[39m r}))}[36mcatch[39m(r){[36mreturn[39m [33mPromise[39m[33m.[39mreject(r)}}}[33m;[39m[36mexport[39m{t [36mas[39m zodResolver}[33m;[39m
+ [90m   |[39m                                                                                [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 2 |[39m [90m//# sourceMappingURL=zod.module.js.map[39m
+ [90m 3 |[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./node_modules/@hookform/resolvers/zod/dist/zod.mjs [Client Component Browser]
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component Browser]
+    ./src/shared/components/account/AddressList.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./node_modules/@hookform/resolvers/zod/dist/zod.mjs [Client Component SSR]
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component SSR]
+    ./src/shared/components/account/AddressList.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/shared/components/account/AddressFormDialog.tsx:6:1
+Module not found: Can't resolve 'react-hook-form'
+[0m [90m 4 |[39m
+ [90m 5 |[39m [36mimport[39m { useEffect } [36mfrom[39m [32m"react"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { useForm } [36mfrom[39m [32m"react-hook-form"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m { zodResolver } [36mfrom[39m [32m"@hookform/resolvers/zod"[39m[33m;[39m
+ [90m 8 |[39m [36mimport[39m [33m*[39m [36mas[39m z [36mfrom[39m [32m"zod"[39m[33m;[39m
+ [90m 9 |[39m [36mimport[39m {[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component Browser]
+    ./src/shared/components/account/AddressList.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component SSR]
+    ./src/shared/components/account/AddressList.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/shared/components/ui/form.tsx:6:1
+Module not found: Can't resolve 'react-hook-form'
+[0m [90m  4 |[39m [36mimport[39m type [33m*[39m [36mas[39m [33mLabelPrimitive[39m [36mfrom[39m [32m"@radix-ui/react-label"[39m
+ [90m  5 |[39m [36mimport[39m { [33mSlot[39m } [36mfrom[39m [32m"@radix-ui/react-slot"[39m
+[31m[1m>[22m[39m[90m  6 |[39m [36mimport[39m {
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  7 |[39m   [33mController[39m[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  8 |[39m   [33mFormProvider[39m[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  9 |[39m   useFormContext[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 10 |[39m   useFormState[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 11 |[39m   type [33mControllerProps[39m[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 12 |[39m   type [33mFieldPath[39m[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 13 |[39m   type [33mFieldValues[39m[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 14 |[39m } [36mfrom[39m [32m"react-hook-form"[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 15 |[39m
+ [90m 16 |[39m [36mimport[39m { cn } [36mfrom[39m [32m"@/shared/lib/utils"[39m
+ [90m 17 |[39m [36mimport[39m { [33mLabel[39m } [36mfrom[39m [32m"@/shared/components/ui/label"[39m[0m
+
+
+
+Import traces:
+  Client Component Browser:
+    ./src/shared/components/ui/form.tsx [Client Component Browser]
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component Browser]
+    ./src/shared/components/account/AddressList.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Client Component Browser]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/shared/components/ui/form.tsx [Client Component SSR]
+    ./src/shared/components/account/AddressFormDialog.tsx [Client Component SSR]
+    ./src/shared/components/account/AddressList.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Client Component SSR]
+    ./src/shared/components/account/AccountContent.tsx [Server Component]
+    ./src/app/(storefront)/account/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./src/shared/components/knowledge/KnowledgeHero.tsx:4:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/shared/components/overview/OverviewHero.tsx:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/shared/components/portfolio/PortfolioHero.tsx:2:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/shared/components/layout/MobileMenuGlass.tsx:13:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/shared/components/layout/MobileSearchOverlay.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/app/(storefront)/product/page.tsx:5:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at ./node_modules/ (hookform/resolvers/dist/resolvers.mjs:1:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at ./node_modules/ (hookform/resolvers/zod/dist/zod.mjs:1:80)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/shared/components/account/AddressFormDialog.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/shared/components/ui/form.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)

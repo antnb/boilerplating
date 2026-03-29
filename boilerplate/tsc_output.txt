@@ -1,0 +1,168 @@
+.next/types/validator.ts(80,39): error TS2307: Cannot find module '../../src/app/(public)/about/page.js' or its corresponding type declarations.
+.next/types/validator.ts(89,39): error TS2307: Cannot find module '../../src/app/(public)/page.js' or its corresponding type declarations.
+.next/types/validator.ts(278,39): error TS2307: Cannot find module '../../src/app/page.js' or its corresponding type declarations.
+src/app/(storefront)/dashboard/page.tsx(7,32): error TS2307: Cannot find module '@/views/BuyerDashboardPage' or its corresponding type declarations.
+src/app/(storefront)/dashboard/page.tsx(18,22): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/app/(storefront)/login/page.tsx(20,38): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/app/(storefront)/product/[slug]/page.tsx(63,40): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/(storefront)/product/page.tsx(5,32): error TS2307: Cannot find module '@/views/ProductListingPage' or its corresponding type declarations.
+src/app/(storefront)/register/page.tsx(19,38): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/account/AddressFormDialog.tsx(6,25): error TS2307: Cannot find module 'react-hook-form' or its corresponding type declarations.
+src/shared/components/account/AddressFormDialog.tsx(110,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(124,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(138,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(152,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(169,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(184,44): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(198,44): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(213,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/account/AddressFormDialog.tsx(227,40): error TS7031: Binding element 'field' implicitly has an 'any' type.
+src/shared/components/auth/LoginForm.tsx(73,53): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/layout/MobileMenu.tsx(90,51): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/layout/MobileMenu.tsx(99,63): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/layout/MobileMenuGlass.tsx(162,59): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/layout/MobileMenuGlass.tsx(168,67): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/layout/Navbar.tsx(197,55): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/layout/Navbar.tsx(198,58): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/components/ui/form.tsx(14,8): error TS2307: Cannot find module 'react-hook-form' or its corresponding type declarations.
+src/shared/lib/actions/address-actions.ts(22,31): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/address-actions.ts(35,54): error TS2339: Property 'errors' does not exist on type 'ZodError<{ label: string; recipientName: string; phone: string; addressLine1: string; city: string; province: string; postalCode: string; isDefault: boolean; addressLine2?: string | undefined; }>'.
+src/shared/lib/actions/address-actions.ts(41,52): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/address-actions.ts(46,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/address-actions.ts(66,37): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/address-actions.ts(67,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/address-actions.ts(84,37): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/address-actions.ts(85,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/address-actions.ts(102,41): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/address-actions.ts(103,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/buyer-dashboard-actions.ts(32,40): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/buyer-dashboard-actions.ts(36,40): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/buyer-dashboard-actions.ts(67,40): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/buyer-dashboard-actions.ts(89,46): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(30,38): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(59,29): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(78,38): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(81,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/cart-actions.ts(99,34): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(100,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/cart-actions.ts(115,26): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(116,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/cart-actions.ts(126,21): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(127,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/cart-actions.ts(143,26): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/cart-actions.ts(144,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/cart-actions.ts(156,49): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/customer-actions.ts(27,21): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/shared/lib/actions/customer-actions.ts(28,21): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/shared/lib/actions/order-actions.ts(39,52): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/order-actions.ts(45,56): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/order-actions.ts(72,13): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/order-actions.ts(85,25): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/order-actions.ts(87,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/order-actions.ts(88,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/order-actions.ts(124,42): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/order-actions.ts(146,50): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/page-content-actions.ts(67,51): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Record<string, unknown>'.
+src/shared/lib/actions/page-content-actions.ts(70,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/page-content-actions.ts(71,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/password-reset-actions.ts(26,21): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/shared/lib/actions/password-reset-actions.ts(27,21): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/shared/lib/actions/payment-actions.ts(42,54): error TS2339: Property 'errors' does not exist on type 'ZodError<{ orderId: string; proofUrl: string; }>'.
+src/shared/lib/actions/payment-actions.ts(57,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/payment-actions.ts(80,54): error TS2339: Property 'errors' does not exist on type 'ZodError<{ orderId: string; }>'.
+src/shared/lib/actions/payment-actions.ts(90,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/payment-actions.ts(91,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/payment-actions.ts(115,54): error TS2339: Property 'errors' does not exist on type 'ZodError<{ orderId: string; reason: string; }>'.
+src/shared/lib/actions/payment-actions.ts(125,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/payment-actions.ts(126,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/profile-actions.ts(24,42): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/profile-actions.ts(49,29): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/profile-actions.ts(71,53): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/profile-actions.ts(79,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/review-actions.ts(37,36): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/review-actions.ts(50,56): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/review-actions.ts(74,9): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/review-actions.ts(85,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/review-admin-actions.ts(38,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/review-admin-actions.ts(46,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/staff-actions.ts(56,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/staff-actions.ts(77,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/wishlist-actions.ts(24,42): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(47,33): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(54,32): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(70,27): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(71,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/wishlist-actions.ts(88,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(89,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/wishlist-actions.ts(114,51): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(117,34): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(118,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/wishlist-actions.ts(121,31): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(122,9): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/wishlist-actions.ts(133,25): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(134,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/actions/wishlist-actions.ts(150,30): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/lib/actions/wishlist-actions.ts(151,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/auth-helpers.ts(24,14): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/lib/auth.ts(49,17): error TS2322: Type 'string' is not assignable to type 'UserRole | undefined'.
+src/shared/lib/auth.ts(60,21): error TS2322: Type 'string' is not assignable to type 'UserRole | undefined'.
+src/shared/lib/auth.ts(69,17): error TS2322: Type 'string' is not assignable to type 'UserRole | undefined'.
+src/shared/lib/auth.ts(70,30): error TS2551: Property 'roleId' does not exist on type '{ id?: string | undefined; name?: string | null | undefined; email?: string | null | undefined; image?: string | null | undefined; role?: UserRole | undefined; }'. Did you mean 'role'?
+src/shared/lib/auth/next-auth-options.ts(83,5): error TS2687: All declarations of 'role' must have identical modifiers.
+src/shared/lib/auth/next-auth-options.ts(84,5): error TS2687: All declarations of 'id' must have identical modifiers.
+src/shared/lib/data/products.ts(181,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/data/products.ts(252,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/data/products.ts(253,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/data/products.ts(272,5): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/data/products.ts(291,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/data/products.ts(292,3): error TS2554: Expected 2 arguments, but got 1.
+src/shared/lib/validations/admin.ts(9,18): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(values: readonly ["pending", "processing", "shipped", "delivered", "cancelled"], params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Object literal may only specify known properties, and 'errorMap' does not exist in type '{ error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; }'.
+  Overload 2 of 2, '(entries: Readonly<Record<string, EnumValue>>, params?: string | { error?: string | $ZodErrorMap<$ZodIssueInvalidValue<unknown>> | undefined; message?: string | undefined; } | undefined): ZodEnum<...>', gave the following error.
+    Argument of type 'readonly ["pending", "processing", "shipped", "delivered", "cancelled"]' is not assignable to parameter of type 'Readonly<Record<string, EnumValue>>'.
+      Index signature for type 'string' is missing in type 'readonly ["pending", "processing", "shipped", "delivered", "cancelled"]'.
+src/shared/lib/validations/page-content.ts(6,11): error TS2554: Expected 2-3 arguments, but got 1.
+src/shared/ui/button.test.tsx(1,18): error TS2305: Module '"@testing-library/react"' has no exported member 'screen'.
+src/shared/ui/card.test.tsx(1,18): error TS2305: Module '"@testing-library/react"' has no exported member 'screen'.
