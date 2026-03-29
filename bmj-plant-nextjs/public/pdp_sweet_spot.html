@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Progressive Data Entry — BMJ Sweet Spot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f5f4f0;color:#1a1a18;font-size:13px}
+.page{max-width:1020px;margin:0 auto;padding:28px 24px}
+
+h1{font-size:17px;font-weight:600;margin-bottom:3px}
+.sub{font-size:12px;color:#888780;margin-bottom:24px;line-height:1.6}
+
+/* tabs */
+.tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #e8e6e1}
+.tab{padding:8px 18px;font-size:12px;font-weight:500;cursor:pointer;color:#888780;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .12s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.tab:hover{color:#1a1a18}
+.tab.on{color:#1a1a18;border-bottom-color:#1a1a18}
+
+.panel{display:none}
+.panel.on{display:block}
+
+/* ═══ PANEL 1: MATRIX ═══ */
+.matrix-wrap{position:relative;background:#fff;border-radius:10px;border:1px solid #e8e6e1;padding:40px 40px 40px 56px}
+
+/* axes */
+.axis-y{position:absolute;left:16px;top:40px;bottom:40px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.axis-y-label{font-size:10px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.06em;writing-mode:vertical-rl;transform:rotate(180deg)}
+.axis-y-arrow{font-size:14px;color:#888780;writing-mode:horizontal-tb;transform:rotate(-90deg)}
+
+.axis-x{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding:0 8px}
+.axis-x-label{font-size:10px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.06em}
+
+/* grid */
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;height:460px}
+.quadrant{border-radius:8px;padding:14px;position:relative;border:1px solid transparent;overflow-y:auto}
+
+.q-tl{background:#fef3ee;border-color:#f0b89a} /* high impact, low effort = TIER 1 */
+.q-tr{background:#fdf8ee;border-color:#f5d48a} /* high impact, high effort = TIER 2 */
+.q-bl{background:#f0f8e8;border-color:#b8dc8a} /* low impact, low effort = TIER 3 */
+.q-br{background:#f5f4f0;border-color:#d3d1c7;opacity:.7} /* low impact, high effort = SKIP */
+
+.q-label{font-size:10px;font-weight:700;letter-spacing:.05em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.q-tier{padding:2px 8px;border-radius:3px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700}
+.tier1-tag{background:#f0997b;color:#fff}
+.tier2-tag{background:#fac775;color:#633806}
+.tier3-tag{background:#c0dd97;color:#27500a}
+.skip-tag{background:#d3d1c7;color:#5f5e5a}
+
+.q-desc{font-size:10px;color:#888780;margin-bottom:10px;line-height:1.5}
+
+/* field chips in matrix */
+.field-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:500;margin:2px;cursor:pointer;transition:all .12s;font-family:'DM Mono',monospace}
+.field-chip:hover{filter:brightness(.93);transform:translateY(-1px)}
+
+.fc-t1{background:#fde4d6;color:#712b13;border:1px solid #f0b89a}
+.fc-t2{background:#fdeec8;color:#633806;border:1px solid #f5d48a}
+.fc-t3{background:#eaf5d6;color:#3b6d11;border:1px solid #b8dc8a}
+.fc-skip{background:#f1efe8;color:#888780;border:1px solid #d3d1c7}
+
+.domain-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* divider between quadrants axis labels */
+.h-divider{position:absolute;left:40px;right:40px;top:50%;border-top:1.5px dashed #d3d1c7;pointer-events:none}
+.v-divider{position:absolute;top:40px;bottom:40px;left:50%;border-left:1.5px dashed #d3d1c7;pointer-events:none}
+.axis-mid-label{position:absolute;font-size:9px;color:#b4b2a9;font-style:italic}
+
+/* ═══ PANEL 2: TIERS ═══ */
+.tiers{display:flex;flex-direction:column;gap:10px}
+.tier-block{border-radius:10px;border:1.5px solid transparent;overflow:hidden}
+.tier-hdr{padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.tier-num{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0}
+.tier-title{font-size:14px;font-weight:600;flex:1}
+.tier-meta{font-size:11px;flex-shrink:0;font-family:'DM Mono',monospace}
+.tier-when{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;flex-shrink:0}
+.tcaret{font-size:10px;color:#b4b2a9;transition:transform .15s;flex-shrink:0}
+.tcaret.open{transform:rotate(90deg)}
+
+.t1-block{border-color:#f0b89a;background:#fff}
+.t1-hdr{background:#fef3ee}
+.t1-num{background:#f0997b;color:#fff}
+.t1-when{background:#fde4d6;color:#712b13}
+
+.t2-block{border-color:#f5d48a;background:#fff}
+.t2-hdr{background:#fdf8ee}
+.t2-num{background:#fac775;color:#633806}
+.t2-when{background:#fdeec8;color:#633806}
+
+.t3-block{border-color:#b8dc8a;background:#fff}
+.t3-hdr{background:#f0f8e8}
+.t3-num{background:#c0dd97;color:#27500a}
+.t3-when{background:#eaf5d6;color:#3b6d11}
+
+.tier-body{display:none;padding:14px 18px;border-top:1px solid rgba(0,0,0,.06)}
+.tier-body.open{display:block}
+
+/* entity sections inside tier */
+.entity-section{margin-bottom:16px}
+.entity-section:last-child{margin-bottom:0}
+.es-name{font-size:12px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.es-domain{font-size:9px;padding:1px 6px;border-radius:2px;font-weight:600;font-family:'DM Mono',monospace}
+
+.field-table{width:100%;border-collapse:collapse}
+.field-table th{text-align:left;font-size:10px;color:#b4b2a9;font-weight:600;padding:4px 8px;border-bottom:1px solid #f1efe8;letter-spacing:.04em;text-transform:uppercase}
+.field-table td{padding:5px 8px;border-bottom:1px solid #f8f7f5;font-size:11px;vertical-align:top}
+.field-table tr:last-child td{border-bottom:none}
+.field-table tr:hover td{background:#faf9f7}
+
+td.fn{font-family:'DM Mono',monospace;font-weight:500;color:#1a1a18;width:22%}
+td.ftype{font-family:'DM Mono',monospace;color:#b4b2a9;font-size:10px;width:22%}
+td.fdesc{color:#5f5e5a;width:36%}
+td.fwhy{color:#888780;font-style:italic;width:20%}
+
+.why-tag{font-size:9px;padding:1px 5px;border-radius:2px;font-weight:600;font-family:'DM Mono',monospace;display:inline-block;margin-bottom:2px}
+.wt-conv{background:#fde4d6;color:#712b13}
+.wt-seo{background:#cecbf6;color:#3c3489}
+.wt-trust{background:#d8ecfa;color:#0c447c}
+.wt-eeat{background:#dff0c8;color:#27500a}
+.wt-ops{background:#f1efe8;color:#5f5e5a}
+
+.input-type{font-size:9px;padding:1px 5px;border-radius:2px;background:#f1efe8;color:#888780;font-family:'DM Mono',monospace;margin-left:4px}
+
+/* ═══ PANEL 3: FORM FLOW ═══ */
+.form-flow{display:flex;flex-direction:column;gap:12px}
+.step-block{background:#fff;border-radius:10px;border:1px solid #e8e6e1;overflow:hidden}
+.step-hdr{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f1efe8}
+.step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:#fff}
+.step-title{font-size:13px;font-weight:600;flex:1}
+.step-est{font-size:11px;color:#888780;font-family:'DM Mono',monospace}
+.step-auto{font-size:10px;padding:1px 8px;border-radius:10px;background:#eaf5d6;color:#3b6d11;font-weight:600}
+
+.step-body{padding:12px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
+.form-field{background:#f5f4f0;border-radius:5px;padding:7px 10px;border:1px solid #e8e6e1}
+.ff-name{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:#1a1a18;margin-bottom:2px}
+.ff-input{font-size:10px;color:#b4b2a9;display:flex;align-items:center;gap:4px}
+.ff-input-tag{font-size:9px;padding:1px 5px;border-radius:2px;background:#e8e6e1;color:#888780;font-family:'DM Mono',monospace}
+.ff-req{width:4px;height:4px;border-radius:50%;background:#e24b4a;flex-shrink:0;margin-right:2px}
+.ff-opt{width:4px;height:4px;border-radius:50%;background:#d3d1c7;flex-shrink:0;margin-right:2px}
+
+.divider-arrow{text-align:center;font-size:18px;color:#d3d1c7;padding:2px 0}
+
+/* progress bar */
+.progress-bar{background:#e8e6e1;border-radius:10px;height:6px;overflow:hidden;margin-top:8px}
+.progress-fill{height:100%;border-radius:10px;transition:width .3s}
+
+/* ═══ PANEL 4: IMPACT vs EFFORT ═══ */
+.chart-container{background:#fff;border-radius:10px;border:1px solid #e8e6e1;padding:24px}
+.impact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px}
+.ig-card{border-radius:8px;padding:12px;border:1px solid transparent}
+.ig-t1{background:#fef3ee;border-color:#f0b89a}
+.ig-t2{background:#fdf8ee;border-color:#f5d48a}
+.ig-t3{background:#f0f8e8;border-color:#b8dc8a}
+.ig-num{font-size:24px;font-weight:700;margin-bottom:2px}
+.ig-label{font-size:11px;color:#888780;margin-bottom:6px}
+.ig-bar{height:4px;border-radius:2px}
+.ig-meta{font-size:10px;color:#888780;margin-top:6px;line-height:1.5}
+
+.effort-table{width:100%;border-collapse:collapse}
+.effort-table th{font-size:10px;color:#b4b2a9;text-align:left;padding:5px 10px;border-bottom:2px solid #f1efe8;letter-spacing:.04em;text-transform:uppercase}
+.effort-table td{padding:6px 10px;border-bottom:1px solid #f8f7f5;font-size:11px}
+.effort-table tr:hover td{background:#faf9f7}
+.effort-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Progressive Data Entry — Sweet Spot Framework</h1>
+<p class="sub">
+  Tim strategi ingin data E-E-A-T maksimal. Tim admin tidak ingin form 40 field sebelum satu produk bisa publish.<br>
+  Solusi: bukan mengurangi data — tapi <strong>menunda pengisian yang tidak menghambat publish</strong>.
+</p>
+
+<div class="tabs">
+  <button class="tab on" onclick="switchTab('matrix')">Impact × Effort Matrix</button>
+  <button class="tab" onclick="switchTab('tiers')">3-Tier Field Priority</button>
+  <button class="tab" onclick="switchTab('form')">Admin Form Flow</button>
+  <button class="tab" onclick="switchTab('metrics')">Operasional Metrics</button>
+</div>
+
+<!-- ═══════════════ PANEL: MATRIX ═══════════════ -->
+<div class="panel on" id="panel-matrix">
+  <div class="matrix-wrap">
+    <div class="axis-y">
+      <span style="font-size:10px;font-weight:600;color:#1a1a18;writing-mode:vertical-rl;transform:rotate(180deg)">HIGH</span>
+      <div class="axis-y-label" style="margin:8px 0">Impact ke SEO / E-E-A-T / Konversi</div>
+      <span style="font-size:10px;font-weight:600;color:#b4b2a9;writing-mode:vertical-rl;transform:rotate(180deg)">LOW</span>
+    </div>
+
+    <div class="matrix-grid">
+      <!-- Q1: High impact, Low effort = TIER 1 DO FIRST -->
+      <div class="quadrant q-tl" id="q-t1">
+        <div class="q-label">
+          <span class="q-tier tier1-tag">TIER 1</span>
+          <span style="font-weight:700;color:#712b13">Wajib saat publish</span>
+        </div>
+        <div class="q-desc">Impact tinggi, effort rendah. Tidak ada alasan ditunda. Produk tidak boleh live tanpa ini.</div>
+        <div id="chips-t1"></div>
+      </div>
+
+      <!-- Q2: High impact, High effort = TIER 2 SCHEDULE -->
+      <div class="quadrant q-tr" id="q-t2">
+        <div class="q-label">
+          <span class="q-tier tier2-tag">TIER 2</span>
+          <span style="font-weight:700;color:#854f0b">Lengkapi dalam 7 hari</span>
+        </div>
+        <div class="q-desc">Impact tinggi tapi butuh waktu. Produk boleh live, tapi wajib dilengkapi dalam window tertentu.</div>
+        <div id="chips-t2"></div>
+      </div>
+
+      <!-- Q3: Low impact, Low effort = TIER 3 NICE TO HAVE -->
+      <div class="quadrant q-bl" id="q-t3">
+        <div class="q-label">
+          <span class="q-tier tier3-tag">TIER 3</span>
+          <span style="font-weight:700;color:#3b6d11">Isi saat ada waktu</span>
+        </div>
+        <div class="q-desc">Nice to have. Tidak akan menghambat SEO atau konversi secara signifikan jika kosong.</div>
+        <div id="chips-t3"></div>
+      </div>
+
+      <!-- Q4: Low impact, High effort = SKIP -->
+      <div class="quadrant q-br" id="q-skip">
+        <div class="q-label">
+          <span class="q-tier skip-tag">SKIP / AUTO</span>
+          <span style="font-weight:700;color:#5f5e5a">Otomasi atau hapus</span>
+        </div>
+        <div class="q-desc">Effort tidak sepadan. Kandidat untuk diotomasi, di-default, atau dihapus dari form.</div>
+        <div id="chips-skip"></div>
+      </div>
+    </div>
+
+    <!-- axis labels -->
+    <div class="h-divider"></div>
+    <div class="v-divider"></div>
+    <div class="axis-mid-label" style="left:50%;top:50%;transform:translate(-50%,-50%);background:#fff;padding:2px 8px;border-radius:3px;border:1px solid #e8e6e1;white-space:nowrap">Sweet Spot</div>
+
+    <div class="axis-x">
+      <span class="axis-x-label">LOW effort admin</span>
+      <span style="font-size:16px;color:#d3d1c7">→</span>
+      <span class="axis-x-label">HIGH effort admin</span>
+    </div>
+  </div>
+
+  <div style="margin-top:10px;font-size:11px;color:#b4b2a9;line-height:1.6;padding:0 4px">
+    💡 Hover chip untuk lihat detail. Warna dot = domain (🟢 Plant · 🟡 Commerce · 🟣 Content · 🔴 Social)
+  </div>
+</div>
+
+<!-- ═══════════════ PANEL: TIERS ═══════════════ -->
+<div class="panel" id="panel-tiers">
+  <div class="tiers" id="tiers-container"></div>
+</div>
+
+<!-- ═══════════════ PANEL: FORM FLOW ═══════════════ -->
+<div class="panel" id="panel-form">
+  <div style="font-size:12px;color:#5f5e5a;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#fff;border-radius:8px;border-left:3px solid #1d9e75;border:1px solid #e8e6e1">
+    Admin form dibagi jadi <strong>3 step terpisah</strong>. Step 1 bisa selesai dalam ~5 menit — produk langsung bisa dipreview. Step 2 dan 3 bisa dikerjakan asinkron, bahkan oleh orang berbeda (content writer untuk narasi, photographer untuk foto).
+  </div>
+  <div class="form-flow" id="form-container"></div>
+</div>
+
+<!-- ═══════════════ PANEL: METRICS ═══════════════ -->
+<div class="panel" id="panel-metrics">
+  <div id="metrics-container"></div>
+</div>
+
+<!-- DETAIL TOOLTIP -->
+<div id="field-detail" style="display:none;position:fixed;bottom:20px;right:20px;background:#1a1a18;color:#f0ede8;padding:12px 16px;border-radius:8px;max-width:280px;font-size:11px;line-height:1.6;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.2)">
+  <div id="fd-name" style="font-weight:600;margin-bottom:4px;font-family:'DM Mono',monospace"></div>
+  <div id="fd-desc" style="color:#b4b2a9"></div>
+  <div id="fd-why" style="margin-top:6px"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════ */
+const DOMAIN_COLOR = {plant:'#97c459',comm:'#fac775',cont:'#afa9ec',social:'#f0997b'};
+const DOMAIN_LABEL = {plant:'Plant',comm:'Commerce',cont:'Content',social:'Social'};
+
+/* tier, impact(1-10), effort(1-10) */
+const FIELDS = [
+  /* TIER 1 — wajib publish */
+  {n:'commonName',       domain:'plant',  tier:1, impact:10, effort:1, type:'Text input',    desc:'Nama produk. H1 heading halaman.', why:['conv','seo']},
+  {n:'category',         domain:'plant',  tier:1, impact:8,  effort:1, type:'Dropdown',      desc:'Kategori utama. Drives label koleksi.', why:['seo','conv']},
+  {n:'scientificName',   domain:'plant',  tier:1, impact:8,  effort:2, type:'Text input',    desc:'Nama ilmiah. JSON-LD + E-E-A-T Expertise.', why:['seo','eeat']},
+  {n:'basePrice',        domain:'comm',   tier:1, impact:10, effort:1, type:'Number input',  desc:'Harga dasar. Field paling kritis di CTA zone.', why:['conv']},
+  {n:'stockStatus',      domain:'comm',   tier:1, impact:9,  effort:1, type:'Dropdown',      desc:'Status stok. Drives TERSEDIA badge + JSON-LD.', why:['conv','seo']},
+  {n:'acceptedPayments', domain:'comm',   tier:1, impact:7,  effort:1, type:'Multi-checkbox',desc:'Metode bayar. Trust signal di bawah harga.', why:['trust','conv']},
+  {n:'lightDescription', domain:'plant',  tier:1, impact:7,  effort:1, type:'Dropdown',      desc:'Kebutuhan cahaya. Quick spec card Z1.', why:['conv','eeat']},
+  {n:'wateringDescription',domain:'plant',tier:1, impact:7,  effort:1, type:'Dropdown',      desc:'Frekuensi air. Quick spec card Z1.', why:['conv','eeat']},
+  {n:'tempMin',          domain:'plant',  tier:1, impact:6,  effort:1, type:'Number input',  desc:'Suhu minimum optimal.', why:['conv','eeat']},
+  {n:'tempMax',          domain:'plant',  tier:1, impact:6,  effort:1, type:'Number input',  desc:'Suhu maksimum optimal.', why:['conv','eeat']},
+  {n:'difficulty',       domain:'plant',  tier:1, impact:7,  effort:1, type:'Dropdown',      desc:'Level kesulitan. Drives badge BEGINNER di hero.', why:['conv','trust']},
+  {n:'heroImage',        domain:'social', tier:1, impact:10, effort:2, type:'File upload',   desc:'Foto produk utama. Impact konversi terbesar.', why:['conv','trust','eeat']},
+  {n:'isAsliPhoto',      domain:'social', tier:1, impact:7,  effort:1, type:'Toggle',        desc:'Flag foto asli. Drives badge FOTO ASLI.', why:['trust','eeat']},
+  {n:'usageTypes',       domain:'plant',  tier:1, impact:6,  effort:1, type:'Multi-checkbox',desc:'Placement chips. Indoor, Terrarium, dll.', why:['conv','seo']},
+  {n:'collectionId',     domain:'comm',   tier:1, impact:5,  effort:1, type:'Dropdown',      desc:'Label koleksi di atas heading.', why:['seo','conv']},
+  {n:'shortDescription', domain:'cont',   tier:1, impact:6,  effort:2, type:'Textarea (140)',desc:'Preview italic di hero. Copy pendek 1 kalimat.', why:['conv']},
+
+  /* TIER 2 — lengkapi dalam 7 hari */
+  {n:'narrativeBody',    domain:'cont',   tier:2, impact:9,  effort:8, type:'Rich text',     desc:'Narasi botanis lengkap. E-E-A-T centerpiece.', why:['eeat','seo']},
+  {n:'authorId',         domain:'cont',   tier:2, impact:8,  effort:4, type:'Dropdown',      desc:'Penulis narasi. Authority signal E-E-A-T.', why:['eeat','trust']},
+  {n:'humidityMin',      domain:'plant',  tier:2, impact:6,  effort:1, type:'Number input',  desc:'Kelembapan min. Ringkasan perawatan Z2.', why:['eeat','conv']},
+  {n:'humidityMax',      domain:'plant',  tier:2, impact:6,  effort:1, type:'Number input',  desc:'Kelembapan max.', why:['eeat','conv']},
+  {n:'guaranteeDays',    domain:'comm',   tier:2, impact:7,  effort:1, type:'Number input',  desc:'Garansi hari. Badge Garansi 7 Hari.', why:['trust']},
+  {n:'hasTracking',      domain:'comm',   tier:2, impact:6,  effort:1, type:'Toggle',        desc:'Badge Pengiriman Aman.', why:['trust']},
+  {n:'galleryImages',    domain:'social', tier:2, impact:7,  effort:5, type:'Multi-upload',  desc:'Foto tambahan. Meningkatkan konversi signifikan.', why:['conv','trust']},
+  {n:'packagingType',    domain:'comm',   tier:2, impact:6,  effort:1, type:'Dropdown',      desc:'Jenis packaging. Krusial untuk pembeli tanaman.', why:['trust','eeat']},
+  {n:'altText',          domain:'social', tier:2, impact:6,  effort:2, type:'Text input',    desc:'Alt text foto. SEO image search.', why:['seo']},
+  {n:'slug',             domain:'comm',   tier:2, impact:8,  effort:1, type:'Auto-generate', desc:'URL canonical. Auto dari commonName.', why:['seo']},
+
+  /* TIER 3 — nice to have */
+  {n:'genus',            domain:'plant',  tier:3, impact:4,  effort:2, type:'Text input',    desc:'Genus. Accordion identitas Z3.', why:['eeat']},
+  {n:'family',           domain:'plant',  tier:3, impact:4,  effort:2, type:'Text input',    desc:'Familia botanis.', why:['eeat']},
+  {n:'origin',           domain:'plant',  tier:3, impact:4,  effort:3, type:'Text input',    desc:'Asal geografis.', why:['eeat']},
+  {n:'soilType',         domain:'plant',  tier:3, impact:4,  effort:2, type:'Text input',    desc:'Media tanam. Accordion perawatan Z3.', why:['eeat']},
+  {n:'fertilizing',      domain:'plant',  tier:3, impact:3,  effort:3, type:'Textarea',      desc:'Panduan pemupukan.', why:['eeat']},
+  {n:'acclimationGuide', domain:'comm',   tier:3, impact:5,  effort:7, type:'Rich text',     desc:'Panduan aklimatisasi. Sinyal Experience.', why:['eeat','trust']},
+  {n:'salePrice',        domain:'comm',   tier:3, impact:5,  effort:1, type:'Number input',  desc:'Harga promo (jika ada).', why:['conv']},
+  {n:'isBudgetFriendly', domain:'comm',   tier:3, impact:3,  effort:1, type:'Toggle',        desc:'Badge Budget Friendly.', why:['conv']},
+
+  /* SKIP / AUTO */
+  {n:'updatedAt',        domain:'comm',   tier:'skip', impact:5, effort:0, type:'Auto',      desc:'Auto timestamp. Tidak perlu input manual.', why:['seo']},
+  {n:'createdAt',        domain:'comm',   tier:'skip', impact:3, effort:0, type:'Auto',      desc:'Auto timestamp.', why:['ops']},
+  {n:'displayOrder',     domain:'comm',   tier:'skip', impact:2, effort:3, type:'Number',    desc:'Urutan tampil. Bisa auto berdasarkan createdAt.', why:['ops']},
+  {n:'coverImageUrl',    domain:'comm',   tier:'skip', impact:2, effort:3, type:'File upload',desc:'Untuk halaman koleksi, bukan PDP.', why:['ops']},
+  {n:'width/height',     domain:'social', tier:'skip', impact:3, effort:0, type:'Auto',      desc:'Auto-extract dari file upload.', why:['ops']},
+  {n:'species',          domain:'plant',  tier:'skip', impact:2, effort:2, type:'Text input', desc:'Duplikasi dengan scientificName untuk sebagian besar kasus.', why:['ops']},
+];
+
+const WHY_LABELS = {conv:'Konversi',seo:'SEO',trust:'Trust',eeat:'E-E-A-T',ops:'Ops'};
+const WHY_CLASS  = {conv:'wt-conv',seo:'wt-seo',trust:'wt-trust',eeat:'wt-eeat',ops:'wt-ops'};
+
+/* ═══════ RENDER MATRIX ═══════ */
+function renderMatrix(){
+  const containers = {1:'chips-t1',2:'chips-t2',3:'chips-t3',skip:'chips-skip'};
+  const chipClass  = {1:'fc-t1',2:'fc-t2',3:'fc-t3',skip:'fc-skip'};
+
+  FIELDS.forEach(f => {
+    const container = document.getElementById(containers[f.tier]);
+    if(!container) return;
+    const chip = document.createElement('span');
+    chip.className = `field-chip ${chipClass[f.tier]}`;
+    chip.innerHTML = `<span class="domain-dot" style="background:${DOMAIN_COLOR[f.domain]}"></span>${f.n}`;
+    chip.addEventListener('mouseenter', ()=>showFieldDetail(f));
+    chip.addEventListener('mouseleave', ()=>hideDetail());
+    container.appendChild(chip);
+  });
+}
+
+function showFieldDetail(f){
+  document.getElementById('fd-name').textContent = f.n;
+  document.getElementById('fd-desc').textContent = f.desc;
+  document.getElementById('fd-why').innerHTML = f.why.map(w=>`<span class="why-tag ${WHY_CLASS[w]}">${WHY_LABELS[w]}</span>`).join(' ');
+  document.getElementById('field-detail').style.display='block';
+}
+function hideDetail(){ document.getElementById('field-detail').style.display='none'; }
+
+/* ═══════ RENDER TIERS ═══════ */
+function renderTiers(){
+  const tierData = [
+    { tier:1, cls:'t1', num:'T1', title:'Wajib saat publish', when:'Produk tidak boleh live tanpa ini', minutes:'~8 menit',
+      desc:'16 field yang impact-nya langsung terasa di konversi dan kepercayaan buyer pertama kali melihat produk. Sebagian besar adalah dropdown atau toggle — bukan text panjang.',
+      groups:[
+        {entity:'Core product', fields:FIELDS.filter(f=>f.tier===1&&['commonName','category','scientificName','collectionId','shortDescription'].includes(f.n))},
+        {entity:'Pricing & stock', fields:FIELDS.filter(f=>f.tier===1&&['basePrice','stockStatus','acceptedPayments'].includes(f.n))},
+        {entity:'Care quick spec', fields:FIELDS.filter(f=>f.tier===1&&['lightDescription','wateringDescription','tempMin','tempMax','difficulty'].includes(f.n))},
+        {entity:'Usage & media', fields:FIELDS.filter(f=>f.tier===1&&['usageTypes','heroImage','isAsliPhoto'].includes(f.n))},
+      ]
+    },
+    { tier:2, cls:'t2', num:'T2', title:'Lengkapi dalam 7 hari', when:'Produk live tapi incomplete badge', minutes:'~25 menit',
+      desc:'10 field yang butuh lebih banyak effort — narasi panjang, foto tambahan, konten perawatan. Produk sudah bisa dibeli, tapi halaman belum fully optimized untuk SEO dan E-E-A-T.',
+      groups:[
+        {entity:'Narrative & author', fields:FIELDS.filter(f=>f.tier===2&&['narrativeBody','authorId'].includes(f.n))},
+        {entity:'Trust zone', fields:FIELDS.filter(f=>f.tier===2&&['guaranteeDays','hasTracking','packagingType'].includes(f.n))},
+        {entity:'Care detail', fields:FIELDS.filter(f=>f.tier===2&&['humidityMin','humidityMax'].includes(f.n))},
+        {entity:'Media & SEO', fields:FIELDS.filter(f=>f.tier===2&&['galleryImages','altText','slug'].includes(f.n))},
+      ]
+    },
+    { tier:3, cls:'t3', num:'T3', title:'Isi saat ada waktu', when:'Enrichment, bukan blocker', minutes:'~30 menit',
+      desc:'8 field yang memperkaya konten tapi tidak memblokir apapun. Kandidat untuk dikerjakan batch — misalnya satu sesi taxonomy enrichment untuk seluruh katalog Aroid sekaligus.',
+      groups:[
+        {entity:'Deep taxonomy', fields:FIELDS.filter(f=>f.tier===3&&['genus','family','origin','species'].includes(f.n))},
+        {entity:'Deep care', fields:FIELDS.filter(f=>f.tier===3&&['soilType','fertilizing','acclimationGuide'].includes(f.n))},
+        {entity:'Commerce extras', fields:FIELDS.filter(f=>f.tier===3&&['salePrice','isBudgetFriendly'].includes(f.n))},
+      ]
+    },
+  ];
+
+  const container = document.getElementById('tiers-container');
+  tierData.forEach(t => {
+    const block = document.createElement('div');
+    block.className = `tier-block t${t.tier}-block`;
+    const hdr = document.createElement('div');
+    hdr.className = `tier-hdr t${t.cls}-hdr`;
+    const caret = document.createElement('span');
+    caret.className = 'tcaret open';
+    caret.textContent = '▶';
+    hdr.innerHTML = `
+      <div class="tier-num t${t.cls}-num">${t.num}</div>
+      <div>
+        <div class="tier-title">${t.title}</div>
+        <div style="font-size:11px;color:#888780;margin-top:1px">${t.desc}</div>
+      </div>
+      <span class="tier-when t${t.cls}-when">${t.when}</span>
+      <span class="tier-meta" style="color:#b4b2a9">${t.minutes}</span>
+    `;
+    hdr.appendChild(caret);
+    block.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.className = 'tier-body open';
+
+    t.groups.forEach(g => {
+      if(!g.fields.length) return;
+      const sec = document.createElement('div');
+      sec.className = 'entity-section';
+      sec.innerHTML = `<div class="es-name">
+        <span>${g.entity}</span>
+      </div>`;
+      const tbl = document.createElement('table');
+      tbl.className = 'field-table';
+      tbl.innerHTML = `<thead><tr><th>Field</th><th>Type</th><th>Deskripsi</th><th>Kenapa penting</th></tr></thead>`;
+      const tbody = document.createElement('tbody');
+      g.fields.forEach(f=>{
+        const tr = document.createElement('tr');
+        const whyBadges = f.why.map(w=>`<span class="why-tag ${WHY_CLASS[w]}">${WHY_LABELS[w]}</span>`).join(' ');
+        tr.innerHTML = `
+          <td class="fn">${f.n}</td>
+          <td class="ftype"><span class="input-type">${f.type}</span></td>
+          <td class="fdesc">${f.desc}</td>
+          <td class="fwhy">${whyBadges}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      tbl.appendChild(tbody);
+      sec.appendChild(tbl);
+      body.appendChild(sec);
+    });
+
+    block.appendChild(body);
+    hdr.addEventListener('click', ()=>{
+      body.classList.toggle('open');
+      caret.classList.toggle('open');
+    });
+    container.appendChild(block);
+  });
+}
+
+/* ═══════ RENDER FORM FLOW ═══════ */
+function renderForm(){
+  const steps = [
+    { num:1, color:'#f0997b', title:'Core Info — Produk bisa dipreview', est:'~8 menit', auto:false,
+      note:'Admin selesaikan ini dulu. Draft langsung bisa direview manager.',
+      fields:[
+        {n:'commonName', input:'Text input', req:true},
+        {n:'scientificName', input:'Text input', req:true},
+        {n:'category', input:'Dropdown', req:true},
+        {n:'collectionId', input:'Dropdown', req:true},
+        {n:'shortDescription', input:'Textarea', req:true},
+        {n:'basePrice', input:'Number', req:true},
+        {n:'stockStatus', input:'Dropdown', req:true},
+        {n:'acceptedPayments', input:'Checkbox', req:true},
+        {n:'heroImage', input:'File upload', req:true},
+        {n:'isAsliPhoto', input:'Toggle', req:true},
+        {n:'lightDescription', input:'Dropdown', req:true},
+        {n:'wateringDescription', input:'Dropdown', req:true},
+        {n:'tempMin / tempMax', input:'Number range', req:true},
+        {n:'difficulty', input:'Dropdown', req:true},
+        {n:'usageTypes', input:'Checkbox', req:true},
+      ], pct:40
+    },
+    { num:2, color:'#fac775', title:'Content & Trust — Siap publish', est:'~25 menit', auto:false,
+      note:'Bisa dikerjakan content writer, bukan harus admin katalog.',
+      fields:[
+        {n:'narrativeTitle', input:'Text input', req:true},
+        {n:'narrativeBody', input:'Rich text editor', req:true},
+        {n:'authorId', input:'Dropdown author', req:true},
+        {n:'humidityMin / humidityMax', input:'Number range', req:true},
+        {n:'guaranteeDays', input:'Number', req:true},
+        {n:'hasTracking', input:'Toggle', req:true},
+        {n:'packagingType', input:'Dropdown', req:true},
+        {n:'galleryImages', input:'Multi-upload', req:false},
+        {n:'altText (per foto)', input:'Text input', req:false},
+      ], pct:80
+    },
+    { num:3, color:'#c0dd97', title:'Deep Enrichment — SEO maksimal', est:'~30 menit', auto:false,
+      note:'Bisa dikerjakan batch per koleksi — semua Aroid sekaligus misalnya.',
+      fields:[
+        {n:'genus / family / origin', input:'Text inputs', req:false},
+        {n:'soilType', input:'Text input', req:false},
+        {n:'fertilizing', input:'Textarea', req:false},
+        {n:'acclimationGuide', input:'Rich text editor', req:false},
+        {n:'salePrice', input:'Number (jika ada)', req:false},
+      ], pct:100
+    },
+    { num:'⚡', color:'#b5d4f4', title:'Auto-generated — Nol effort admin', est:'otomatis', auto:true,
+      note:'Field ini di-generate oleh sistem saat Step 1 selesai.',
+      fields:[
+        {n:'slug', input:'Auto dari commonName', req:false},
+        {n:'createdAt / updatedAt', input:'Auto timestamp', req:false},
+        {n:'width / height foto', input:'Auto-extract', req:false},
+        {n:'publishedAt', input:'Auto saat publish', req:false},
+      ], pct:null
+    },
+  ];
+
+  const container = document.getElementById('form-container');
+  steps.forEach((s, i) => {
+    if(i > 0 && !s.auto) {
+      const arr = document.createElement('div');
+      arr.className = 'divider-arrow';
+      arr.textContent = '↓';
+      container.appendChild(arr);
+    }
+    const block = document.createElement('div');
+    block.className = 'step-block';
+    const shdr = document.createElement('div');
+    shdr.className = 'step-hdr';
+    shdr.style.borderLeft = `4px solid ${s.color}`;
+    shdr.innerHTML = `
+      <div class="step-num" style="background:${s.color}">${s.num}</div>
+      <div style="flex:1">
+        <div class="step-title">${s.title}</div>
+        <div style="font-size:11px;color:#888780;margin-top:1px">${s.note}</div>
+      </div>
+      <span class="step-est">${s.est}</span>
+      ${s.auto ? '<span class="step-auto">AUTO</span>' : ''}
+    `;
+    if(s.pct !== null){
+      const pb = document.createElement('div');
+      pb.innerHTML = `<div class="progress-bar" style="margin:0 16px 10px"><div class="progress-fill" style="width:${s.pct}%;background:${s.color}"></div></div>`;
+      shdr.after(pb);
+    }
+    block.appendChild(shdr);
+
+    if(s.pct!==null){
+      const bar = document.createElement('div');
+      bar.innerHTML = `<div class="progress-bar" style="margin:0 16px 8px"><div class="progress-fill" style="width:${s.pct}%;background:${s.color}"></div></div>`;
+      block.appendChild(bar);
+      const pct_label = document.createElement('div');
+      pct_label.style.cssText='font-size:10px;color:#b4b2a9;padding:0 16px 6px;font-family:DM Mono,monospace';
+      pct_label.textContent = `Data completeness setelah step ini: ${s.pct}%`;
+      block.appendChild(pct_label);
+    }
+
+    const sbody = document.createElement('div');
+    sbody.className = 'step-body';
+    s.fields.forEach(f => {
+      const ff = document.createElement('div');
+      ff.className = 'form-field';
+      ff.innerHTML = `
+        <div class="ff-name">${f.n}</div>
+        <div class="ff-input"><div class="${f.req?'ff-req':'ff-opt'}"></div><span class="ff-input-tag">${f.input}</span></div>
+      `;
+      sbody.appendChild(ff);
+    });
+    block.appendChild(sbody);
+    container.appendChild(block);
+  });
+}
+
+/* ═══════ RENDER METRICS ═══════ */
+function renderMetrics(){
+  const t1 = FIELDS.filter(f=>f.tier===1);
+  const t2 = FIELDS.filter(f=>f.tier===2);
+  const t3 = FIELDS.filter(f=>f.tier===3);
+  const skip = FIELDS.filter(f=>f.tier==='skip');
+
+  const cont = document.getElementById('metrics-container');
+  cont.innerHTML = `
+    <div class="impact-grid">
+      <div class="ig-card ig-t1">
+        <div class="ig-num" style="color:#d85a30">${t1.length}</div>
+        <div class="ig-label">Tier 1 — Wajib publish</div>
+        <div class="ig-bar" style="background:#f0997b;width:100%"></div>
+        <div class="ig-meta">Semua input singkat. ~8 menit total. Produk langsung bisa dipreview setelah ini selesai.</div>
+      </div>
+      <div class="ig-card ig-t2">
+        <div class="ig-num" style="color:#854f0b">${t2.length}</div>
+        <div class="ig-label">Tier 2 — Dalam 7 hari</div>
+        <div class="ig-bar" style="background:#fac775;width:${t2.length/(t1.length+t2.length+t3.length)*100}%"></div>
+        <div class="ig-meta">Beberapa butuh effort menulis. Tapi tidak memblokir publish. Bisa dikerjakan content writer terpisah.</div>
+      </div>
+      <div class="ig-card ig-t3">
+        <div class="ig-num" style="color:#3b6d11">${t3.length}</div>
+        <div class="ig-label">Tier 3 — Enrichment</div>
+        <div class="ig-bar" style="background:#c0dd97;width:${t3.length/(t1.length+t2.length+t3.length)*100}%"></div>
+        <div class="ig-meta">Nice to have. Paling efisien dikerjakan batch per kategori, bukan per produk.</div>
+      </div>
+    </div>
+
+    <div style="background:#fff;border-radius:10px;border:1px solid #e8e6e1;overflow:hidden;margin-bottom:12px">
+      <div style="padding:12px 16px;background:#f5f4f0;border-bottom:1px solid #e8e6e1;font-size:12px;font-weight:600">Distribusi effort per tier</div>
+      <table class="effort-table">
+        <thead><tr><th>Tier</th><th>Jumlah field</th><th>Avg effort</th><th>Est. waktu</th><th>Blocker?</th><th>Dikerjakan oleh</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:#fde4d6;color:#712b13;font-family:'DM Mono',monospace">T1</span></td>
+            <td style="font-weight:600">${t1.length} field</td>
+            <td>${(t1.reduce((a,f)=>a+f.effort,0)/t1.length).toFixed(1)} / 10</td>
+            <td style="font-weight:600;color:#d85a30">~8 menit</td>
+            <td style="color:#d85a30;font-weight:600">Ya — wajib</td>
+            <td>Admin katalog</td>
+          </tr>
+          <tr>
+            <td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:#fdeec8;color:#633806;font-family:'DM Mono',monospace">T2</span></td>
+            <td style="font-weight:600">${t2.length} field</td>
+            <td>${(t2.reduce((a,f)=>a+f.effort,0)/t2.length).toFixed(1)} / 10</td>
+            <td style="font-weight:600;color:#854f0b">~25 menit</td>
+            <td style="color:#888780">Tidak — 7 hari</td>
+            <td>Admin + Content writer</td>
+          </tr>
+          <tr>
+            <td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:#eaf5d6;color:#27500a;font-family:'DM Mono',monospace">T3</span></td>
+            <td style="font-weight:600">${t3.length} field</td>
+            <td>${(t3.reduce((a,f)=>a+f.effort,0)/t3.length).toFixed(1)} / 10</td>
+            <td style="font-weight:600;color:#3b6d11">~30 menit</td>
+            <td style="color:#888780">Tidak — enrichment</td>
+            <td>Content writer (batch)</td>
+          </tr>
+          <tr>
+            <td><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px;background:#f1efe8;color:#5f5e5a;font-family:'DM Mono',monospace">AUTO</span></td>
+            <td style="font-weight:600">${skip.length} field</td>
+            <td>0 / 10</td>
+            <td style="font-weight:600;color:#1d9e75">0 menit</td>
+            <td style="color:#1d9e75;font-weight:600">Nol effort</td>
+            <td>Sistem (auto-generate)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:#1a1a18;border-radius:10px;padding:16px 20px;color:#f0ede8">
+      <div style="font-size:12px;font-weight:600;margin-bottom:10px;color:#9fe1cb">Prinsip Sweet Spot</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11px;line-height:1.7;color:#b4b2a9">
+        <div>
+          <div style="color:#f0ede8;font-weight:600;margin-bottom:3px">Publish dulu, enrich belakangan</div>
+          Produk dengan T1 saja sudah bisa dijual. SEO dan E-E-A-T dioptimalkan progressively — tidak menghambat kecepatan katalog.
+        </div>
+        <div>
+          <div style="color:#f0ede8;font-weight:600;margin-bottom:3px">Pisahkan role pengisi data</div>
+          Admin katalog isi T1 (cepat, structured). Content writer isi T2 narasi. Taxonomy enrichment batch T3 per koleksi — bukan per produk.
+        </div>
+        <div>
+          <div style="color:#f0ede8;font-weight:600;margin-bottom:3px">Completeness score sebagai motivator</div>
+          Tampilkan progress bar per produk di admin dashboard. Produk 40% = T1 done. 80% = T2 done. 100% = fully optimized.
+        </div>
+        <div>
+          <div style="color:#f0ede8;font-weight:600;margin-bottom:3px">Auto-generate menghilangkan friction</div>
+          slug, timestamps, image dimensions — nol input manual. Setiap field yang bisa diotomasi harus diotomasi.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ═══════ TAB SWITCH ═══════ */
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  event.target.classList.add('on');
+  document.getElementById('panel-'+id).classList.add('on');
+}
+
+renderMatrix();
+renderTiers();
+renderForm();
+renderMetrics();
+</script>
+</body>
+</html>

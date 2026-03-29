@@ -1,0 +1,31 @@
+﻿  Γû▓ Next.js 14.2.21
+
+   Creating an optimized production build ...
+ Γ£ô Compiled successfully
+   Linting and checking validity of types ...
+node.exe : Failed to compile.
+At C:\Program Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Failed to compile.:String) [], Rem 
+   oteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+./src/components/account/AccountContent.tsx:30:25
+Type error: 'searchParams' is possibly 'null'.
+
+[0m [90m 28 |[39m     [36mconst[39m searchParams [33m=[39m 
+useSearchParams()[33m;[39m[0m
+[0m [90m 29 |[39m     [36mconst[39m { data[33m:[39m session } 
+[33m=[39m useSession()[33m;[39m[0m
+[0m[31m[1m>[22m[39m[90m 30 |[39m     [36mconst[39m initialTab 
+[33m=[39m (searchParams[33m.[39m[36mget[39m([32m"tab"[39m) [36mas[39m 
+[33mTabKey[39m) [33m||[39m [32m"orders"[39m[33m;[39m[0m
+[0m [90m    |[39m                         [31m[1m^[22m[39m[0m
+[0m [90m 31 |[39m     [36mconst[39m [activeTab[33m,[39m setActiveTab] 
+[33m=[39m 
+useState[33m<[39m[33mTabKey[39m[33m>[39m(initialTab)[33m;[39m[0m
+[0m [90m 32 |[39m[0m
+[0m [90m 33 |[39m     [36mconst[39m handleTabChange [33m=[39m 
+(tab[33m:[39m [33mTabKey[39m) [33m=>[39m {[0m

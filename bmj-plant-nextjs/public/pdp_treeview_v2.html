@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PDP Data Treeview</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f5f4f0;color:#1a1a18;font-size:13px;padding:28px 24px}
+
+.page-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.page-sub{font-size:12px;color:#888780;margin-bottom:20px}
+
+/* toolbar */
+.toolbar{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.tbtn{padding:4px 12px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #d3d1c7;background:#fff;color:#5f5e5a;transition:all .12s;font-family:'DM Sans',sans-serif}
+.tbtn:hover{border-color:#888780;color:#1a1a18}
+.tbtn.on{background:#1a1a18;color:#fff;border-color:#1a1a18}
+.sep{width:1px;height:18px;background:#d3d1c7;margin:0 2px}
+
+/* legend row */
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:#5f5e5a}
+.ldot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.lsep{width:1px;height:14px;background:#d3d1c7;margin:0 4px}
+
+/* === TREE === */
+.tree{display:flex;flex-direction:column;gap:12px}
+
+/* domain block */
+.domain{border-radius:8px;overflow:hidden;border:1px solid transparent}
+.domain-plant  {border-color:#b8dc8a;background:#f7fbf0}
+.domain-comm   {border-color:#f5d48a;background:#fdf8ee}
+.domain-cont   {border-color:#c5c0f0;background:#f5f4fe}
+.domain-social {border-color:#f0b89a;background:#fef3ee}
+.domain-schema {border-color:#c5c0f0;background:#f5f4fe;opacity:.85}
+
+/* domain header */
+.domain-hdr{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.domain-plant  .domain-hdr{background:#eaf5d6}
+.domain-comm   .domain-hdr{background:#fdeec8}
+.domain-cont   .domain-hdr{background:#eae8fc}
+.domain-social .domain-hdr{background:#fde4d6}
+.domain-schema .domain-hdr{background:#eae8fc}
+
+.domain-icon{font-size:14px;flex-shrink:0}
+.domain-name{font-size:13px;font-weight:600;flex:1}
+.domain-desc{font-size:11px;color:#888780;font-style:italic}
+.domain-count{font-size:10px;padding:1px 7px;border-radius:10px;background:rgba(0,0,0,.08);color:rgba(0,0,0,.5);font-weight:500}
+.caret{font-size:10px;color:#b4b2a9;transition:transform .15s;flex-shrink:0}
+.caret.open{transform:rotate(90deg)}
+
+/* domain body */
+.domain-body{padding:10px;display:none;flex-direction:column;gap:8px}
+.domain-body.open{display:flex}
+
+/* entity block */
+.entity{border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,.08);background:#fff}
+.entity-hdr{padding:8px 12px;display:flex;align-items:center;gap:8px;cursor:pointer;background:#faf9f7;border-bottom:1px solid rgba(0,0,0,.06);user-select:none}
+.entity-name{font-size:12px;font-weight:600;flex:1;color:#1a1a18}
+.entity-type{font-family:'DM Mono',monospace;font-size:10px;color:#b4b2a9;background:#f1efe8;padding:1px 6px;border-radius:3px}
+.entity-count{font-size:10px;color:#b4b2a9}
+.e-caret{font-size:9px;color:#d3d1c7;transition:transform .15s}
+.e-caret.open{transform:rotate(90deg)}
+
+/* entity body */
+.entity-body{display:none;flex-direction:column}
+.entity-body.open{display:flex}
+
+/* field group */
+.fgroup{border-bottom:1px solid #f1efe8}
+.fgroup:last-child{border-bottom:none}
+.fgroup-hdr{padding:5px 12px 4px 28px;font-size:10px;font-weight:600;letter-spacing:.06em;color:#b4b2a9;text-transform:uppercase;background:#fdf;display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none;background:#faf9f7}
+.fgroup-hdr:hover{background:#f5f4f0}
+.fg-caret{font-size:8px;color:#d3d1c7;transition:transform .12s}
+.fg-caret.open{transform:rotate(90deg)}
+.fgroup-tag{width:7px;height:7px;border-radius:1px;flex-shrink:0}
+
+/* field rows */
+.fgroup-body{display:none}
+.fgroup-body.open{display:block}
+
+.field-row{display:flex;align-items:baseline;gap:0;padding:5px 12px 5px 40px;border-bottom:1px solid #f8f7f5;cursor:pointer;transition:background .1s;position:relative}
+.field-row:last-child{border-bottom:none}
+.field-row:hover{background:#f5f4f0}
+.field-row.selected{background:#eef5fc}
+
+/* indent guide */
+.field-row::before{content:'';position:absolute;left:28px;top:0;bottom:0;width:1px;background:#ede9e4}
+
+.f-name{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#1a1a18;min-width:160px;flex-shrink:0}
+.f-type{font-family:'DM Mono',monospace;font-size:10px;color:#b4b2a9;flex:1;font-style:italic}
+.f-badges{display:flex;gap:3px;flex-wrap:nowrap;flex-shrink:0;margin-left:8px}
+.fb{font-size:9px;padding:1px 5px;border-radius:2px;font-weight:600;white-space:nowrap;font-family:'DM Mono',monospace}
+
+/* zone badge colors */
+.fz1{background:#c0dd97;color:#27500a}
+.fz2{background:#b5d4f4;color:#0c447c}
+.fz3{background:#d3d1c7;color:#444441}
+.fz4{background:#f5c4b3;color:#712b13}
+.fsc{background:#cecbf6;color:#3c3489}
+
+/* eeat */
+.fee{background:#d5f0e8;color:#085041}
+.fex{background:#dff0c8;color:#27500a}
+.fea{background:#fde8c0;color:#633806}
+.fet{background:#d8ecfa;color:#0c447c}
+
+/* required dot */
+.req{width:5px;height:5px;border-radius:50%;background:#e24b4a;flex-shrink:0;margin-right:4px;margin-top:2px}
+.opt{width:5px;height:5px;border-radius:50%;background:#e8e6e1;flex-shrink:0;margin-right:4px;margin-top:2px}
+
+/* detail drawer */
+.detail{margin-top:16px;padding:14px 16px;background:#fff;border-radius:8px;border:1px solid #e8e6e1;display:none}
+.detail.open{display:block}
+.detail-name{font-size:14px;font-weight:600;margin-bottom:2px}
+.detail-meta{font-size:11px;color:#888780;margin-bottom:8px;font-family:'DM Mono',monospace}
+.detail-desc{font-size:12px;color:#5f5e5a;line-height:1.7;margin-bottom:10px}
+.detail-pills{display:flex;gap:4px;flex-wrap:wrap}
+
+/* filter dim */
+.field-row.dim{opacity:.18}
+.entity.dim{opacity:.18}
+.fgroup.dim{opacity:.18}
+
+/* schema entity style */
+.schema-entity{border-radius:6px;overflow:hidden;border:1px solid rgba(127,119,221,.2);background:#fff}
+.schema-entity .entity-hdr{background:#f5f4fe}
+.schema-field{padding:5px 12px 5px 28px;font-size:11px;border-bottom:1px solid #f1efe8;display:flex;gap:8px;color:#534ab7;font-family:'DM Mono',monospace}
+.schema-field:last-child{border-bottom:none}
+.sf-key{font-weight:500;min-width:140px;flex-shrink:0}
+.sf-src{color:#b4b2a9;font-size:10px;font-style:italic;flex:1}
+
+/* computed badge */
+.computed-tag{font-size:9px;padding:1px 6px;border-radius:2px;background:#eae8fc;color:#534ab7;font-weight:600;font-family:'DM Mono',monospace}
+
+</style>
+</head>
+<body>
+
+<div class="page-title">PDP Domain Data — BMJ Plant Store</div>
+<div class="page-sub">Pengelompokan data per domain → entity → field group → field</div>
+
+<div class="toolbar">
+  <button class="tbtn on" onclick="expandAll()">Expand all</button>
+  <button class="tbtn" onclick="collapseAll()">Collapse all</button>
+  <div class="sep"></div>
+  <button class="tbtn zf" data-z="" onclick="filterZone(this,'')">Semua</button>
+  <button class="tbtn zf" data-z="z1" onclick="filterZone(this,'z1')">Z1 Above fold</button>
+  <button class="tbtn zf" data-z="z2" onclick="filterZone(this,'z2')">Z2 Trust zone</button>
+  <button class="tbtn zf" data-z="z3" onclick="filterZone(this,'z3')">Z3 Deep dive</button>
+  <button class="tbtn zf" data-z="z4" onclick="filterZone(this,'z4')">Z4 Social</button>
+  <button class="tbtn zf" data-z="sc" onclick="filterZone(this,'sc')">JSON-LD</button>
+</div>
+
+<div class="legend">
+  <div class="li"><div class="ldot" style="background:#97c459"></div>Plant</div>
+  <div class="li"><div class="ldot" style="background:#f5cc6a"></div>Commerce</div>
+  <div class="li"><div class="ldot" style="background:#afa9ec"></div>Content</div>
+  <div class="li"><div class="ldot" style="background:#f0997b"></div>Social</div>
+  <div class="lsep"></div>
+  <div class="li"><div class="ldot" style="background:#c0dd97"></div>Z1</div>
+  <div class="li"><div class="ldot" style="background:#b5d4f4"></div>Z2</div>
+  <div class="li"><div class="ldot" style="background:#d3d1c7"></div>Z3</div>
+  <div class="li"><div class="ldot" style="background:#f5c4b3"></div>Z4</div>
+  <div class="li"><div class="ldot" style="background:#cecbf6"></div>Schema</div>
+  <div class="lsep"></div>
+  <div class="li"><div class="req"></div>Required</div>
+  <div class="li"><div class="opt"></div>Optional</div>
+</div>
+
+<div class="tree" id="tree"></div>
+<div class="detail" id="detail"></div>
+
+<script>
+/* ─────────────────────────────────────────
+   DATA MODEL
+   hierarchy: domain → entity → fieldGroup → field
+   field: { n, type, desc, zones[], eeat[], req }
+───────────────────────────────────────── */
+const DATA = [
+
+  /* ═══════════ PLANT ═══════════ */
+  { domain:'plant', icon:'🌿', label:'Plant Domain',
+    desc:'Pengetahuan tentang tanaman itu sendiri — taksonomi, perawatan, dan placement.',
+    entities:[
+
+      { name:'PlantIdentity', type:'Entity', desc:'Identitas dan taksonomi lengkap. Backbone sinyal Expertise dalam E-E-A-T.',
+        groups:[
+          { label:'Naming', color:'#97c459', fields:[
+            { n:'commonName',    type:'String',          desc:'Nama umum/brand yang muncul di H1 heading hero.',                               zones:['z1'],         eeat:[], req:true },
+            { n:'scientificName',type:'String',          desc:'Nama ilmiah lengkap misal Syngonium podophyllum. Tampil italic di sub-heading dan JSON-LD.', zones:['z1','sc'],    eeat:['Ex','A'], req:true },
+            { n:'cultivar',      type:'String?',         desc:'Varietas spesifik misal "Pink Splash". Membedakan di level paling granular.',   zones:['z1','sc'],    eeat:['A'], req:false },
+          ]},
+          { label:'Taxonomy', color:'#5caa22', fields:[
+            { n:'category',      type:'Enum AROID|SUCCULENT|FERN…', desc:'Kategori utama. Drives label koleksi di atas heading H1.',           zones:['z1'],         eeat:[], req:true },
+            { n:'genus',         type:'String',          desc:'Genus tanaman. Tampil di accordion Identitas dan JSON-LD.',                     zones:['z3','sc'],    eeat:['Ex'], req:true },
+            { n:'family',        type:'String',          desc:'Familia botanis misal Araceae.',                                                zones:['z3'],         eeat:['Ex'], req:true },
+            { n:'species',       type:'String',          desc:'Spesies tanaman.',                                                              zones:['z3'],         eeat:['Ex'], req:false },
+            { n:'origin',        type:'String',          desc:'Asal geografis. Menunjukkan pengetahuan historis spesifik.',                    zones:['z3'],         eeat:['Ex','A'], req:false },
+          ]},
+        ]
+      },
+
+      { name:'CareProfile', type:'Entity', desc:'Spesifikasi perawatan lengkap. Sumber data quick spec (Z1) dan ringkasan perawatan (Z2).',
+        groups:[
+          { label:'Quick spec — Z1', color:'#c0dd97', fields:[
+            { n:'lightDescription',   type:'String',     desc:'Label display cahaya misal "Low to Bright Indirect". Muncul di quick spec card dan ringkasan.',  zones:['z1','z2'], eeat:['Ex'], req:true },
+            { n:'wateringDescription',type:'String',     desc:'Label frekuensi air misal "When soil is dry". Quick spec Z1 dan ringkasan Z2.',                  zones:['z1','z2'], eeat:['Ex'], req:true },
+            { n:'tempMin',            type:'Int °C',     desc:'Suhu minimum optimal. Ditampilkan sebagai 15°C – 30°C.',                                        zones:['z1','z2'], eeat:['Ex'], req:true },
+            { n:'tempMax',            type:'Int °C',     desc:'Suhu maksimum optimal.',                                                                        zones:['z1','z2'], eeat:['Ex'], req:true },
+            { n:'difficulty',         type:'Enum BEGINNER|INTERMEDIATE|ADVANCED', desc:'Level kesulitan. Drives badge overlay BEGINNER di hero image.',        zones:['z1'],      eeat:['Exp'], req:true },
+          ]},
+          { label:'Care summary — Z2', color:'#b5d4f4', fields:[
+            { n:'humidityMin',    type:'Int %',           desc:'Kelembapan minimum. Tampil di 4-grid ringkasan perawatan (40%).',                               zones:['z2'],      eeat:['Ex'], req:true },
+            { n:'humidityMax',    type:'Int %',           desc:'Kelembapan maksimum (70%).',                                                                   zones:['z2'],      eeat:['Ex'], req:true },
+          ]},
+          { label:'Deep detail — Z3', color:'#d3d1c7', fields:[
+            { n:'soilType',       type:'String',          desc:'Rekomendasi media tanam. Konten accordion Panduan Perawatan.',                                  zones:['z3'],      eeat:['Ex'], req:false },
+            { n:'fertilizing',    type:'String',          desc:'Panduan pemupukan. Konten accordion Z3.',                                                       zones:['z3'],      eeat:['Ex'], req:false },
+          ]},
+        ]
+      },
+
+      { name:'UsageContext', type:'Entity (multi-row)', desc:'Tag placement yang sesuai. Drives chip badges Indoor, Outdoor Teduh, Terrarium, Air Purifier.',
+        groups:[
+          { label:'Placement chips — Z1', color:'#c0dd97', fields:[
+            { n:'type',   type:'Enum INDOOR|OUTDOOR_SHADE|TERRARIUM|AIR_PURIFIER|OFFICE', desc:'Jenis placement. Setiap baris = satu chip badge.', zones:['z1'], eeat:[], req:true },
+            { n:'label',  type:'String',      desc:'Teks display chip misal "Outdoor Teduh".',                                                     zones:['z1'], eeat:[], req:true },
+            { n:'icon',   type:'String?',     desc:'Identifier icon untuk chip.',                                                                  zones:['z1'], eeat:[], req:false },
+          ]},
+        ]
+      },
+    ]
+  },
+
+  /* ═══════════ COMMERCE ═══════════ */
+  { domain:'comm', icon:'🛒', label:'Commerce Domain',
+    desc:'Semua yang berhubungan dengan transaksi — harga, stok, pembayaran, pengiriman, koleksi.',
+    entities:[
+
+      { name:'Pricing', type:'Entity', desc:'Harga, stok, dan payment methods. Data paling kritis di above-fold conversion zone.',
+        groups:[
+          { label:'Price display', color:'#fac775', fields:[
+            { n:'basePrice',  type:'Int (IDR)',           desc:'Harga dasar. Tampil sebagai Rp 185.000 di hero.',                                zones:['z1'],      eeat:['T'], req:true },
+            { n:'salePrice',  type:'Int? (nullable)',     desc:'Harga promo. Null = tidak ada diskon. Jika ada, basePrice di-strikethrough.',    zones:['z1'],      eeat:[], req:false },
+            { n:'currency',   type:'String',              desc:'Kode mata uang. Hardcoded "IDR", masuk JSON-LD Offer.',                         zones:['sc'],      eeat:['T'], req:true },
+          ]},
+          { label:'Stock & availability', color:'#c0dd97', fields:[
+            { n:'stockStatus',type:'Enum IN_STOCK|OUT_OF_STOCK|PRE_ORDER|LIMITED', desc:'Status stok. Drives badge TERSEDIA dan JSON-LD availability mapping.', zones:['z1','sc'], eeat:['T'], req:true },
+            { n:'stockQty',   type:'Int?',                desc:'Kuantitas aktual. Untuk urgency messaging "Stok tersisa X" jika LIMITED.',       zones:['z1'],      eeat:[], req:false },
+          ]},
+          { label:'Payment & flags', color:'#f5c4b3', fields:[
+            { n:'acceptedPayments', type:'String[]',      desc:'Daftar metode bayar. Drives icon QRIS, Dana, BCA, Mandiri.',                    zones:['z1'],      eeat:['T'], req:true },
+            { n:'isBudgetFriendly', type:'Boolean',       desc:'Flag badge BUDGET FRIENDLY di overlay hero image.',                             zones:['z1'],      eeat:['Exp'], req:false },
+          ]},
+        ]
+      },
+
+      { name:'ShippingConfig', type:'Entity', desc:'Konfigurasi pengiriman dan garansi. Drives 3 trust badges di Z2 dan konten accordion di Z3.',
+        groups:[
+          { label:'Trust badges — Z2', color:'#b5d4f4', fields:[
+            { n:'guaranteeDays', type:'Int',              desc:'Durasi garansi hari. Drives badge "Garansi 7 Hari".',                            zones:['z2'],      eeat:['T'], req:true },
+            { n:'hasTracking',   type:'Boolean',          desc:'Tersedia tracking. Drives badge "Pengiriman Aman + tracking provided".',         zones:['z2'],      eeat:['T'], req:true },
+            { n:'supportType',   type:'String',           desc:'Tipe support misal "24/7". Drives badge "Support 24/7".',                       zones:['z2'],      eeat:['T'], req:true },
+          ]},
+          { label:'Shipping detail — Z3', color:'#d3d1c7', fields:[
+            { n:'packagingType',    type:'Enum BARE_ROOT|POTTED|TISSUE_CULTURE', desc:'Jenis packaging. Krusial untuk pembeli tanaman.',        zones:['z3'],      eeat:['Exp','T'], req:true },
+            { n:'acclimationGuide',type:'Text Markdown',  desc:'Panduan aklimatisasi spesifik. Konten accordion Z3. Sinyal Experience terkuat.', zones:['z3'],     eeat:['Exp','Ex'], req:false },
+            { n:'shippingNotes',   type:'String?',        desc:'Catatan pengiriman tambahan.',                                                  zones:['z3'],      eeat:[], req:false },
+          ]},
+        ]
+      },
+
+      { name:'ProductCollection', type:'Entity', desc:'Grup atau seri produk. Drives label "Koleksi Aroid" di atas heading dan navigasi koleksi.',
+        groups:[
+          { label:'Identity & navigation', color:'#fac775', fields:[
+            { n:'name',         type:'String',            desc:'Nama koleksi misal "Koleksi Aroid". Tampil sebagai label kecil di atas H1.',     zones:['z1'],      eeat:[], req:true },
+            { n:'slug',         type:'String unique',     desc:'URL halaman koleksi /koleksi/[slug]. Entry point navigasi.',                     zones:['z1'],      eeat:['T'], req:true },
+            { n:'displayOrder', type:'Int',               desc:'Urutan tampil di listing koleksi.',                                             zones:[],          eeat:[], req:false },
+          ]},
+          { label:'Content', color:'#d3d1c7', fields:[
+            { n:'description',  type:'String',            desc:'Deskripsi koleksi. Muncul di accordion Z3 sebagai konteks.',                     zones:['z3'],      eeat:['A'], req:false },
+            { n:'coverImageUrl',type:'String?',           desc:'Gambar cover halaman koleksi (bukan di PDP).',                                   zones:[],          eeat:[], req:false },
+          ]},
+        ]
+      },
+    ]
+  },
+
+  /* ═══════════ CONTENT ═══════════ */
+  { domain:'cont', icon:'✍️', label:'Content Domain',
+    desc:'Narasi dan otoritas editorial — E-E-A-T centerpiece yang membangun kredibilitas melalui authorship.',
+    entities:[
+
+      { name:'BotanicalContent', type:'Entity', desc:'Narasi botanis berautor. Konten inilah yang membedakan dari listing produk biasa.',
+        groups:[
+          { label:'Hero preview — Z1', color:'#c0dd97', fields:[
+            { n:'shortDescription', type:'String (max 140)', desc:'Preview satu kalimat di hero — tampil italic di bawah nama produk.', zones:['z1'], eeat:[], req:true },
+          ]},
+          { label:'Narrative body — Z2', color:'#b5d4f4', fields:[
+            { n:'narrativeTitle', type:'String',          desc:'Judul section narasi misal "Narasi Botanikal".',                                  zones:['z2'],      eeat:['Ex'], req:true },
+            { n:'narrativeBody',  type:'Text Markdown',   desc:'Isi narasi lengkap. Konten E-E-A-T utama — ditulis botanist, bukan copy-paste.',  zones:['z2'],      eeat:['Ex','A'], req:true },
+            { n:'authorId',       type:'FK → Author',     desc:'Relasi ke botanist penulis. Memunculkan attribution card di bawah narasi.',       zones:['z2'],      eeat:['Ex','A'], req:true },
+          ]},
+          { label:'Freshness — JSON-LD', color:'#cecbf6', fields:[
+            { n:'publishedAt',    type:'DateTime',        desc:'Tanggal publikasi. Masuk JSON-LD Article datePublished.',                         zones:['sc'],      eeat:['T'], req:true },
+            { n:'lastReviewedAt', type:'DateTime',        desc:'Tanggal terakhir di-review. Freshness signal paling sering terlewat — krusial untuk Google.', zones:['sc'], eeat:['T'], req:true },
+          ]},
+        ]
+      },
+
+      { name:'Author', type:'Entity', desc:'Botanist/penulis. Sinyal otoritas E-E-A-T paling kuat — mengangkat kredibilitas seluruh narasi.',
+        groups:[
+          { label:'Display — Z2', color:'#b5d4f4', fields:[
+            { n:'name',       type:'String',              desc:'Nama lengkap. Tampil di attribution card bawah narasi.',                         zones:['z2'],      eeat:['A'], req:true },
+            { n:'title',      type:'String',              desc:'Jabatan misal "Botanical Specialist – BMJ Plant Store". Verifikasi keahlian.',    zones:['z2'],      eeat:['Ex','A'], req:true },
+            { n:'avatarUrl',  type:'String',              desc:'Foto profil. Wajah nyata = trust lebih tinggi dari logo generik.',               zones:['z2'],      eeat:['T'], req:true },
+            { n:'bio',        type:'Text',                desc:'Bio singkat. Tampil di attribution card dan halaman profil publik.',              zones:['z2'],      eeat:['Ex','A'], req:true },
+          ]},
+          { label:'Authority signals', color:'#fde8c0', fields:[
+            { n:'profileUrl',  type:'String?',            desc:'Link halaman profil publik. Authority signal yang dapat di-crosscheck.',          zones:['z2'],      eeat:['A','T'], req:false },
+            { n:'credentials', type:'String?',            desc:'Sertifikasi atau kredensial botanis.',                                           zones:['z2'],      eeat:['Ex','A'], req:false },
+          ]},
+        ]
+      },
+    ]
+  },
+
+  /* ═══════════ SOCIAL ═══════════ */
+  { domain:'social', icon:'⭐', label:'Social Domain',
+    desc:'Bukti visual dan sosial — trust melalui foto asli dan ulasan pembeli nyata yang terverifikasi.',
+    entities:[
+
+      { name:'ProductMedia', type:'Entity (multi-row)', desc:'Media visual produk. isAsliPhoto drives badge FOTO ASLI — diferensiasi kunci dari kompetitor.',
+        groups:[
+          { label:'Hero & gallery — Z1', color:'#c0dd97', fields:[
+            { n:'url',          type:'String',            desc:'URL gambar atau video.',                                                          zones:['z1'],      eeat:[], req:true },
+            { n:'type',         type:'Enum HERO|GALLERY|CERTIFICATE|CLOSE_UP', desc:'HERO = gambar utama carousel. GALLERY = thumbnail tambahan.', zones:['z1'],    eeat:[], req:true },
+            { n:'isAsliPhoto',  type:'Boolean',           desc:'Flag foto asli sendiri. Drives badge FOTO ASLI di overlay hero. Diferensiasi dari foto stock/AI.', zones:['z1'], eeat:['Exp','T'], req:true },
+            { n:'displayOrder', type:'Int',               desc:'Urutan carousel gallery.',                                                        zones:['z1'],      eeat:[], req:true },
+          ]},
+          { label:'SEO & meta', color:'#cecbf6', fields:[
+            { n:'altText',  type:'String',                desc:'Alt text untuk SEO image search dan aksesibilitas. Masuk Open Graph meta.',       zones:['sc'],      eeat:['T'], req:true },
+            { n:'width',    type:'Int?',                  desc:'Lebar pixel — untuk Open Graph meta image.',                                      zones:['sc'],      eeat:[], req:false },
+            { n:'height',   type:'Int?',                  desc:'Tinggi pixel — untuk Open Graph meta image.',                                     zones:['sc'],      eeat:[], req:false },
+          ]},
+        ]
+      },
+
+      { name:'CustomerReview', type:'Entity (multi-row)', desc:'Ulasan pembeli. Social proof Z4 dan sumber AggregateRating JSON-LD untuk rich snippet Google.',
+        groups:[
+          { label:'Review content — Z4', color:'#f5c4b3', fields:[
+            { n:'rating',           type:'Int 1–5',       desc:'Bintang per review. Feeds ratingValue di AggregateRating JSON-LD.',              zones:['z4','sc'], eeat:['T'], req:true },
+            { n:'body',             type:'Text',          desc:'Isi teks ulasan.',                                                               zones:['z4'],      eeat:['Exp','T'], req:true },
+            { n:'photoUrl',         type:'String?',       desc:'Foto produk dari pembeli. Authenticity signal terkuat — tidak bisa dipalsukan.',  zones:['z4'],      eeat:['Exp','T'], req:false },
+            { n:'isVerifiedPurchase',type:'Boolean',      desc:'Flag verified buyer. Drives badge centang — review bukan ditanam.',              zones:['z4'],      eeat:['T'], req:true },
+          ]},
+          { label:'Moderation & meta', color:'#d3d1c7', fields:[
+            { n:'status',     type:'Enum PENDING|APPROVED|REJECTED', desc:'Status moderasi. Hanya APPROVED yang tampil di halaman.',             zones:[],          eeat:[], req:true },
+            { n:'createdAt',  type:'DateTime',            desc:'Tanggal review. Masuk JSON-LD review datePublished.',                            zones:['z4','sc'], eeat:['T'], req:true },
+          ]},
+        ]
+      },
+    ]
+  },
+
+  /* ═══════════ SCHEMA (computed) ═══════════ */
+  { domain:'schema', icon:'🔖', label:'JSON-LD Schema Layer',
+    desc:'Layer computed — tidak visible di UI, diinject ke <head> untuk Google rich snippet.',
+    schema: true,
+    schemas:[
+      { type:'Product', fields:['name ← PlantIdentity.commonName','description ← BotanicalContent.shortDescription','image ← ProductMedia[HERO].url','sku ← Product.id','brand ← Organization','offers ← Pricing','aggregateRating ← CustomerReview[] computed','review ← CustomerReview[APPROVED]'] },
+      { type:'Offer', fields:['price ← Pricing.basePrice atau salePrice','priceCurrency ← "IDR"','availability ← Pricing.stockStatus mapped','url ← Product.slug → canonical'] },
+      { type:'AggregateRating', fields:['ratingValue ← avg(CustomerReview.rating)','reviewCount ← count(APPROVED) — render hanya jika ≥ 1','bestRating ← 5','worstRating ← 1'] },
+      { type:'BreadcrumbList', fields:['item[0] Home /','item[1] Produk /produk','item[2] Koleksi ← ProductCollection.slug','item[3] Produk ini ← Product.name + slug'] },
+      { type:'Article (narasi)', fields:['headline ← BotanicalContent.narrativeTitle','author.name ← Author.name','author.url ← Author.profileUrl','datePublished ← BotanicalContent.publishedAt','dateModified ← BotanicalContent.lastReviewedAt'] },
+      { type:'Organization', fields:['name "PT Bumi Mekarsari Jaya"','url ← domain canonical','logo ← BMJ logo asset URL','address "Cipanas, Cianjur, Jawa Barat"','telephone + email ← footer data'] },
+    ]
+  },
+];
+
+/* ─── badge helpers ─── */
+const ZC = {z1:'fz1',z2:'fz2',z3:'fz3',z4:'fz4',sc:'fsc'};
+const ZL = {z1:'Z1',z2:'Z2',z3:'Z3',z4:'Z4',sc:'SC'};
+const EC = {Exp:'fee',Ex:'fex',A:'fea',T:'fet'};
+const EL = {Exp:'Exp',Ex:'Expert',A:'Auth',T:'Trust'};
+
+function zbadge(z){ return `<span class="fb ${ZC[z]}">${ZL[z]}</span>` }
+function ebadge(e){ return `<span class="fb ${EC[e]}">${EL[e]}</span>` }
+
+let activeZone = '';
+let selected = null;
+
+/* ─── RENDER ─── */
+function render(){
+  const tree = document.getElementById('tree');
+  tree.innerHTML = '';
+
+  DATA.forEach(domain => {
+    const domDiv = document.createElement('div');
+    domDiv.className = `domain domain-${domain.domain}`;
+
+    /* domain header */
+    const hdr = document.createElement('div');
+    hdr.className = 'domain-hdr';
+    const caret = document.createElement('span');
+    caret.className = 'caret open';
+    caret.textContent = '▶';
+
+    const totalFields = domain.schema ? 0 :
+      domain.entities.reduce((a,e)=>a+e.groups.reduce((b,g)=>b+g.fields.length,0),0);
+    const countStr = domain.schema ? `${domain.schemas.length} types` : `${domain.entities.length} entities · ${totalFields} fields`;
+
+    hdr.innerHTML = `
+      <span class="domain-icon">${domain.icon}</span>
+      <span class="domain-name">${domain.label}</span>
+      <span class="domain-desc">${domain.desc}</span>
+      <span class="domain-count">${countStr}</span>
+    `;
+    hdr.appendChild(caret);
+    domDiv.appendChild(hdr);
+
+    /* domain body */
+    const body = document.createElement('div');
+    body.className = 'domain-body open';
+
+    if (domain.schema) {
+      /* schema layer */
+      domain.schemas.forEach(s => {
+        const se = document.createElement('div');
+        se.className = 'schema-entity';
+        const sh = document.createElement('div');
+        sh.className = 'entity-hdr';
+        sh.innerHTML = `<span class="entity-name">${s.type}</span><span class="computed-tag">computed</span>`;
+        se.appendChild(sh);
+        s.fields.forEach(f => {
+          const sf = document.createElement('div');
+          sf.className = 'schema-field';
+          const parts = f.split('←');
+          sf.innerHTML = `<span class="sf-key">${parts[0].trim()}</span><span class="sf-src">${parts[1]?'← '+parts[1].trim():''}</span>`;
+          se.appendChild(sf);
+        });
+        body.appendChild(se);
+      });
+    } else {
+      domain.entities.forEach(entity => {
+        const entDiv = document.createElement('div');
+        entDiv.className = 'entity';
+        entDiv.dataset.entity = entity.name;
+
+        const ehdr = document.createElement('div');
+        ehdr.className = 'entity-hdr';
+        const ecaret = document.createElement('span');
+        ecaret.className = 'e-caret open';
+        ecaret.textContent = '▶';
+        const fcount = entity.groups.reduce((a,g)=>a+g.fields.length,0);
+        ehdr.innerHTML = `<span class="entity-name">${entity.name}</span><span class="entity-type">${entity.type}</span><span class="entity-count">${fcount} fields</span>`;
+        ehdr.appendChild(ecaret);
+        entDiv.appendChild(ehdr);
+
+        const ebody = document.createElement('div');
+        ebody.className = 'entity-body open';
+
+        entity.groups.forEach(group => {
+          const fg = document.createElement('div');
+          fg.className = 'fgroup';
+          fg.dataset.zones = [...new Set(group.fields.flatMap(f=>f.zones))].join(',');
+
+          const fghdr = document.createElement('div');
+          fghdr.className = 'fgroup-hdr';
+          const fgcaret = document.createElement('span');
+          fgcaret.className = 'fg-caret open';
+          fgcaret.textContent = '▶';
+          fghdr.innerHTML = `<div class="fgroup-tag" style="background:${group.color}"></div><span style="flex:1">${group.label}</span><span style="font-size:10px;color:#d3d1c7;margin-right:4px">${group.fields.length}</span>`;
+          fghdr.appendChild(fgcaret);
+          fg.appendChild(fghdr);
+
+          const fgbody = document.createElement('div');
+          fgbody.className = 'fgroup-body open';
+
+          group.fields.forEach(field => {
+            const row = document.createElement('div');
+            row.className = 'field-row';
+            row.dataset.zones = field.zones.join(',');
+            row.dataset.entity = entity.name;
+
+            const zbadges = field.zones.map(z=>zbadge(z)).join('');
+            const ebadges = field.eeat.map(e=>ebadge(e)).join('');
+            const dot = field.req ? `<div class="req"></div>` : `<div class="opt"></div>`;
+
+            row.innerHTML = `
+              ${dot}
+              <span class="f-name">${field.n}</span>
+              <span class="f-type">${field.type}</span>
+              <div class="f-badges">${zbadges}${ebadges}</div>
+            `;
+            row.addEventListener('click', e => { e.stopPropagation(); selectField(row, field, entity.name, group.label); });
+            fgbody.appendChild(row);
+          });
+
+          fg.appendChild(fgbody);
+
+          /* field group toggle */
+          fghdr.addEventListener('click', e => {
+            e.stopPropagation();
+            const open = fgbody.classList.contains('open');
+            fgbody.classList.toggle('open', !open);
+            fgcaret.classList.toggle('open', !open);
+          });
+
+          ebody.appendChild(fg);
+        });
+
+        entDiv.appendChild(ebody);
+
+        /* entity toggle */
+        ehdr.addEventListener('click', e => {
+          e.stopPropagation();
+          const open = ebody.classList.contains('open');
+          ebody.classList.toggle('open', !open);
+          ecaret.classList.toggle('open', !open);
+        });
+
+        body.appendChild(entDiv);
+      });
+    }
+
+    domDiv.appendChild(body);
+
+    /* domain toggle */
+    hdr.addEventListener('click', () => {
+      const open = body.classList.contains('open');
+      body.classList.toggle('open', !open);
+      caret.classList.toggle('open', !open);
+    });
+
+    tree.appendChild(domDiv);
+  });
+
+  applyZoneFilter();
+}
+
+/* ─── DETAIL ─── */
+function selectField(row, field, entityName, groupLabel) {
+  if (selected) selected.classList.remove('selected');
+  selected = row;
+  row.classList.add('selected');
+
+  const det = document.getElementById('detail');
+  det.classList.add('open');
+
+  const zbadges = field.zones.map(z=>`<span class="fb ${ZC[z]}" style="font-size:11px;padding:2px 8px">${ZL[z]}</span>`).join('');
+  const ebadges = field.eeat.map(e=>`<span class="fb ${EC[e]}" style="font-size:11px;padding:2px 8px">${EL[e]}</span>`).join('');
+
+  det.innerHTML = `
+    <div class="detail-name">${field.n}</div>
+    <div class="detail-meta">${entityName} · ${groupLabel} · ${field.type} · ${field.req?'Required':'Optional'}</div>
+    <div class="detail-desc">${field.desc}</div>
+    <div class="detail-pills">${zbadges}${ebadges}</div>
+  `;
+}
+
+/* ─── FILTER ─── */
+function filterZone(btn, zone) {
+  activeZone = zone;
+  document.querySelectorAll('.tbtn.zf').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  applyZoneFilter();
+}
+
+function applyZoneFilter() {
+  if (!activeZone) {
+    document.querySelectorAll('.field-row').forEach(r => r.classList.remove('dim'));
+    document.querySelectorAll('.fgroup').forEach(g => g.classList.remove('dim'));
+    return;
+  }
+  document.querySelectorAll('.field-row').forEach(r => {
+    const zones = r.dataset.zones || '';
+    r.classList.toggle('dim', !zones.split(',').includes(activeZone));
+  });
+  document.querySelectorAll('.fgroup').forEach(g => {
+    const zones = g.dataset.zones || '';
+    const hasMatch = zones.split(',').some(z => z === activeZone);
+    g.classList.toggle('dim', !hasMatch);
+  });
+}
+
+/* ─── EXPAND / COLLAPSE ─── */
+function expandAll() {
+  document.querySelectorAll('.domain-body,.entity-body,.fgroup-body').forEach(el => el.classList.add('open'));
+  document.querySelectorAll('.caret,.e-caret,.fg-caret').forEach(el => el.classList.add('open'));
+}
+function collapseAll() {
+  document.querySelectorAll('.domain-body,.entity-body,.fgroup-body').forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.caret,.e-caret,.fg-caret').forEach(el => el.classList.remove('open'));
+}
+
+render();
+</script>
+</body>
+</html>
