@@ -1,0 +1,69 @@
+
+> nextjs-elite-boilerplate@0.1.0 dev
+> next dev
+
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3○ Compiling / ...
+⨯ Error [PrismaClientInitializationError]:
+Invalid `{imported module ./src/shared/lib/prisma.ts}["prisma"].product.findMany()` invocation in
+/app/boilerplate/.next/dev/server/chunks/ssr/[root-of-the-server]__6d1089e1._.js:111:157
+
+  108     return result !== null;
+  109 }
+  110 const getCachedProducts = (0, {imported module ./nodemodules/next/cache.js}["unstable_cache"])(async (opts)=>{
+→ 111     return {imported module ./src/shared/lib/prisma.ts}["prisma"].product.findMany(
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:7
+   |
+ 6 |   provider = "mysql"
+ 7 |   url      = env("DATABASE_URL")
+   |
+
+Validation Error Count: 1
+    at <unknown> (src/shared/lib/data/products.ts:55:27)
+    at <unknown> (-->  schema.prisma:7)
+    at async HomePage (src/app/(storefront)/page.tsx:38:49)
+  53 | export const getCachedProducts = unstable_cache(
+  54 |   async (opts?: { categorySlug?: string; take?: number }) => {
+> 55 |     return prisma.product.findMany({
+     |                           ^
+  56 |       where: {
+  57 |         isActive: true,
+  58 |         ...(opts?.categorySlug && { category: { slug: opts.categorySlug } }), {
+  clientVersion: '5.22.0',
+  errorCode: undefined,
+  digest: '3329914342'
+}
+⨯ Error [PrismaClientInitializationError]:
+Invalid `{imported module ./src/shared/lib/prisma.ts}["prisma"].pageContent.findUnique()` invocation in
+/app/boilerplate/.next/dev/server/chunks/ssr/src_a5e266bf._.js:678:177
+
+  675 ;
+  676 function getPageContent(key) {
+  677     return (0, {imported module ./nodemodules/next/cache.js}["unstable_cache"])(async ()=>{
+→ 678         const page = await {imported module ./src/shared/lib/prisma.ts}["prisma"].pageContent.findUnique(
+error: Environment variable not found: DATABASE_URL.
+  -->  schema.prisma:7
+   |
+ 6 |   provider = "mysql"
+ 7 |   url      = env("DATABASE_URL")
+   |
+
+Validation Error Count: 1
+    at <unknown> (src/shared/lib/data/page-content.ts:16:45)
+    at <unknown> (-->  schema.prisma:7)
+    at async revalidate (src/shared/lib/data/page-content.ts:16:20)
+    at async StorefrontLayout (src/app/(storefront)/layout.tsx:17:23)
+  14 |   return unstable_cache(
+  15 |     async () => {
+> 16 |       const page = await prisma.pageContent.findUnique({
+     |                                             ^
+  17 |         where: { key },
+  18 |         select: { content: true },
+  19 |       }); {
+  clientVersion: '5.22.0',
+  errorCode: undefined,
+  digest: '3358204484'
+}
+ GET / 200 in 8.8s (compile: 8.2s, render: 654ms)
