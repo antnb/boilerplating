@@ -1,0 +1,467 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 5: Auth — Role (lookup table)
+// ══════════════════════════════════════════════════════════════
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(30)
+  label String @db.VarChar(50)
+  users User[]
+  @@map("roles")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 5: Auth — User
+// ══════════════════════════════════════════════════════════════
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?  @db.VarChar(100)
+  phone          String?  @db.VarChar(20)
+  hashedPassword String   @db.VarChar(255)
+  roleId         Int      @default(5)
+  role           Role     @relation(fields: [roleId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  orders        Order[]
+  addresses     Address[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  reviews       Review[]
+  staffProfile  StaffProfile?
+
+  @@index([roleId])
+  @@map("users")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 5: Auth — PasswordResetToken
+// ══════════════════════════════════════════════════════════════
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique @db.VarChar(255)
+  email     String   @db.VarChar(191)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — Category
+// ══════════════════════════════════════════════════════════════
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @db.VarChar(100)
+  slug        String  @unique
+  description String? @db.Text
+  sortOrder   Int     @default(0)
+
+  products Product[]
+
+  @@map("categories")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — Product
+// ══════════════════════════════════════════════════════════════
+
+model Product {
+  id             String   @id @default(cuid())
+  slug           String   @unique
+  sku            String?  @unique
+  name           String   @db.VarChar(200)
+  scientificName String?  @db.VarChar(200)
+  description    String   @db.Text
+  price          Decimal  @db.Decimal(12, 2)
+  compareAtPrice Decimal? @db.Decimal(12, 2)
+  discountPct    Int      @default(0)
+  stock          Int      @default(0)
+  careDifficulty Int      @default(2)
+  sizeOptions    Json // e.g. ["S","M","L"]
+  labels         Json // e.g. ["Rare","Variegated"]
+  specs          Json // {light, water, soil, humidity, temperature, toxicity}
+  faqs           Json? // Optional FAQ JSON
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  curatorId  String?
+  curator    StaffProfile? @relation(fields: [curatorId], references: [id])
+
+  images        ProductImage[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+  reviews       Review[]
+  orderItems    OrderItem[]
+
+  @@index([categoryId, isActive, createdAt])
+  @@index([isActive, price])
+  @@map("products")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — ProductImage
+// ══════════════════════════════════════════════════════════════
+
+model ProductImage {
+  id        String @id @default(cuid())
+  url       String @db.VarChar(500)
+  alt       String @db.VarChar(200)
+  sortOrder Int    @default(0)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — Order
+// ══════════════════════════════════════════════════════════════
+
+model Order {
+  id                 String   @id @default(cuid())
+  orderNumber        String   @unique
+  status             String   @default("pending") @db.VarChar(30) // pending, processing, shipped, delivered, cancelled
+  subtotal           Decimal  @db.Decimal(12, 2)
+  discount           Decimal  @default(0) @db.Decimal(12, 2)
+  shippingCost       Decimal  @default(0) @db.Decimal(12, 2)
+  total              Decimal  @db.Decimal(12, 2)
+  addressSnapshot    Json // Snapshot of address at order time
+  paymentMethod      String?  @db.VarChar(100)
+  paymentProof       String?  @db.VarChar(500)
+  notes              String?  @db.Text
+  couponCode         String?  @db.VarChar(50)
+  trackingCourier    String?  @db.VarChar(50)
+  trackingNumber     String?  @db.VarChar(100)
+  trackingLastUpdate String?  @db.VarChar(255)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  items    OrderItem[]
+  timeline OrderTimeline[]
+
+  @@index([userId, status, createdAt])
+  @@map("orders")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — OrderItem
+// ══════════════════════════════════════════════════════════════
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  productName String  @db.VarChar(200) // Snapshot at order time
+  sku         String? @db.VarChar(50)
+  quantity    Int
+  unitPrice   Decimal @db.Decimal(12, 2)
+  image       String? @db.VarChar(500) // Snapshot
+
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — OrderTimeline
+// ══════════════════════════════════════════════════════════════
+
+model OrderTimeline {
+  id        String   @id @default(cuid())
+  status    String   @db.VarChar(30)
+  note      String?  @db.Text
+  createdAt DateTime @default(now())
+
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("order_timeline")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — Address
+// ══════════════════════════════════════════════════════════════
+
+model Address {
+  id            String   @id @default(cuid())
+  label         String   @db.VarChar(50) // "Rumah", "Kantor"
+  recipientName String   @db.VarChar(100)
+  phone         String   @db.VarChar(20)
+  streetAddress String   @db.Text
+  district      String?  @db.VarChar(100)
+  city          String   @db.VarChar(100)
+  province      String   @db.VarChar(100)
+  postalCode    String   @db.VarChar(10)
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isDefault])
+  @@map("addresses")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — CartItem
+// ══════════════════════════════════════════════════════════════
+
+model CartItem {
+  id        String   @id @default(cuid())
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — WishlistItem
+// ══════════════════════════════════════════════════════════════
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — Coupon
+// ══════════════════════════════════════════════════════════════
+
+model Coupon {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  description    String    @db.VarChar(255)
+  type           String    @db.VarChar(30) // "percentage", "fixed", "free_shipping"
+  value          Decimal   @db.Decimal(10, 2)
+  minOrderAmount Decimal   @default(0) @db.Decimal(12, 2)
+  maxDiscount    Decimal?  @db.Decimal(12, 2) // Null = unlimited
+  usageCount     Int       @default(0)
+  usageLimit     Int       @default(0) // 0 = unlimited
+  isActive       Boolean   @default(true)
+  validFrom      DateTime?
+  validUntil     DateTime
+  createdAt      DateTime  @default(now())
+
+  @@index([isActive, validUntil])
+  @@map("coupons")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 1: E-Commerce — Review
+// ══════════════════════════════════════════════════════════════
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int // 1-5
+  title      String?  @db.VarChar(200)
+  comment    String   @db.Text
+  photos     Json?    // String[] — max 3 photo URLs, validated at application layer
+  isVerified Boolean  @default(false) // Purchased this product
+  createdAt  DateTime @default(now())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@index([productId, createdAt])
+  @@map("reviews")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 2: Staff — StaffProfile (replaces Expert)
+// ══════════════════════════════════════════════════════════════
+
+model StaffProfile {
+  id               String  @id  // SHARED with User.id — NOT auto-generated
+  shortName        String  @db.VarChar(50)
+  title            String  @db.VarChar(200)
+  bio              String  @db.Text
+  avatar           String? @db.VarChar(500)
+  badge            String? @db.VarChar(50)
+  verificationNote String? @db.Text
+  staffRole        String  @db.VarChar(30)
+  isTeamVisible    Boolean @default(true)
+  teamSortOrder    Int     @default(0)
+
+  user             User    @relation(fields: [id], references: [id], onDelete: Cascade)
+
+  articles         Article[]
+  curatedProducts  Product[]
+
+  @@index([isTeamVisible, teamSortOrder])
+  @@map("staff_profiles")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 2: Knowledge Hub — Article
+// ══════════════════════════════════════════════════════════════
+
+model Article {
+  id                   String    @id @default(cuid())
+  slug                 String    @unique
+  title                String    @db.VarChar(300)
+  subtitle             String    @db.Text
+  content              String    @db.LongText // HTML content
+  category             String    @db.VarChar(100) // "Identifikasi Spesies", etc.
+  author               String    @db.VarChar(100) // "Dr. Hartono S."
+  heroImage            String    @db.VarChar(500)
+  heroImageAlt         String    @db.VarChar(300)
+  mobileSpecimenImage  String?   @db.VarChar(500)
+  mobileSpecimenLabel  String?   @db.VarChar(200)
+  readTime             String    @db.VarChar(20) // "8 min read"
+  specs                Json // [{icon, label, value}, ...]
+  isPublished          Boolean   @default(false)
+  isFeatured           Boolean   @default(false)
+  publishedAt          DateTime?
+  sortOrder            Int       @default(0)
+  zone                 String?   @db.VarChar(50) // "mengenal", "memilih", "merawat", "menggunakan", "tren"
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  authorProfileId String
+  authorProfile   StaffProfile @relation(fields: [authorProfileId], references: [id])
+
+  relatedFrom ArticleRelation[] @relation("ArticleFrom")
+  relatedTo   ArticleRelation[] @relation("ArticleTo")
+
+  @@index([isPublished, zone, sortOrder])
+  @@index([category])
+  @@map("articles")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 2: Knowledge Hub — ArticleRelation (self-referencing M:N)
+// ══════════════════════════════════════════════════════════════
+
+model ArticleRelation {
+  id               String @id @default(cuid())
+  articleId        String
+  relatedArticleId String
+
+  article        Article @relation("ArticleFrom", fields: [articleId], references: [id], onDelete: Cascade)
+  relatedArticle Article @relation("ArticleTo", fields: [relatedArticleId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, relatedArticleId])
+  @@map("article_relations")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 3: Portfolio
+// ══════════════════════════════════════════════════════════════
+
+model Portfolio {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String   @db.VarChar(300)
+  category    String   @db.VarChar(100) // "Lanskap", "Eksotik", "Logistik"
+  heroImage   String   @db.VarChar(500)
+  description String   @db.Text
+  challenge   String   @db.Text
+  solution    String   @db.Text
+  result      String   @db.Text
+  specs       Json // {client, location, scale, duration, completedAt, plantCount}
+  tags        Json // ["Hotel","Resort","Bali"]
+  isPublished Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  images         PortfolioImage[]
+  deliveryStages DeliveryStage[]
+
+  @@index([isPublished, sortOrder])
+  @@map("portfolios")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 3: Portfolio — PortfolioImage
+// ══════════════════════════════════════════════════════════════
+
+model PortfolioImage {
+  id        String @id @default(cuid())
+  url       String @db.VarChar(500)
+  alt       String @db.VarChar(300)
+  sortOrder Int    @default(0)
+
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("portfolio_images")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 3: Portfolio — DeliveryStage
+// ══════════════════════════════════════════════════════════════
+
+model DeliveryStage {
+  id          String @id @default(cuid())
+  step        String @db.VarChar(5) // "01", "02", etc.
+  label       String @db.VarChar(100) // "Seleksi di Kebun"
+  description String @db.Text
+  icon        String @db.VarChar(50) // Material icon name
+  images      Json // [{id, src, alt}]
+  sortOrder   Int    @default(0)
+
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@map("delivery_stages")
+}
+
+// ══════════════════════════════════════════════════════════════
+// Domain 4: CMS — PageContent (JSON blobs)
+// ══════════════════════════════════════════════════════════════
+
+model PageContent {
+  id        String   @id @default(cuid())
+  key       String   @unique // "homepage", "navbar", "layanan", "overview", "knowledge-page", "portfolio-page"
+  content   Json     @db.Json
+  updatedAt DateTime @updatedAt
+
+  @@map("page_contents")
+}
